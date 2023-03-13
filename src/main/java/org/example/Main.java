@@ -8,15 +8,11 @@ import java.lang.reflect.Proxy;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-//        System.out.println("Hello world!");
-        SomeClass someClass = new SomeClass();
-        CGLibTest cgLibTest = new CGLibTest(someClass);
+        CGLibTest<SomeClass> cgLibTest = new CGLibTest<>(SomeClass.class);
 
         SomeClass mocked = cgLibTest.getMock();
 
-        cgLibTest.whenThen(mocked.getClass().getDeclaredMethod("stringReturnMethod"), "Hello from mocked method!!!");
-
-//        mocked = cgLibTest.getMock();
+        cgLibTest.whenThen(SomeClass.class.getDeclaredMethod("stringReturnMethod"), "Hello from mocked method!!!");
 
         System.out.println(mocked.stringReturnMethod());
 /*        Original original = new Original();
