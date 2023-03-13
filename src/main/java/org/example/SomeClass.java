@@ -8,4 +8,8 @@ public class SomeClass {
     public void annotatedMethod() {
         System.out.println("Annotated method called");
     }
+
+    public String stringReturnMethod(){
+        return "Henlo from someclass";
+    }
 }

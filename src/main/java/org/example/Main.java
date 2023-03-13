@@ -8,15 +8,25 @@ import java.lang.reflect.Proxy;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello world!");
-        Original original = new Original();
+//        System.out.println("Hello world!");
+        SomeClass someClass = new SomeClass();
+        CGLibTest cgLibTest = new CGLibTest(someClass);
+
+        SomeClass mocked = cgLibTest.getMock();
+
+        cgLibTest.whenThen(mocked.getClass().getDeclaredMethod("stringReturnMethod"), "Hello from mocked method!!!");
+
+//        mocked = cgLibTest.getMock();
+
+        System.out.println(mocked.stringReturnMethod());
+/*        Original original = new Original();
         Handler handler = new Handler(original);
         If f = (If) Proxy.newProxyInstance(If.class.getClassLoader(),
                 new Class[] { If.class },
                 handler);
-        f.originalMethod("Hallo");
+        f.originalMethod("Hallo");*/
     }
-
+/*
     //processing code
     public static void callAnnotated(Class<?> aClass) throws Exception {
         Object obj = aClass.getDeclaredConstructor().newInstance();
@@ -49,6 +59,6 @@ public class Main {
             System.out.println("AFTER");
             return null;
         }
-    }
+    }*/
 }
 
