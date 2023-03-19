@@ -5,16 +5,24 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+
         CGLibTest<SomeClass> cgLibTest = new CGLibTest<>(SomeClass.class);
 
         SomeClass mocked = cgLibTest.getMock();
 
-        cgLibTest.whenThen(SomeClass.class.getDeclaredMethod("stringReturnMethod"), "Hello from mocked method!!!");
+        Class<?>[] paramTypes = new Class<?>[]{String.class};
+//        cgLibTest.whenThen(SomeClass.class.getDeclaredMethod("stringReturnMethod", paramTypes), "Hello from mocked method!!!");
 
-        System.out.println(mocked.stringReturnMethod());
+        cgLibTest.when(mocked.stringReturnMethod("123")).thenReturn("test return on 123");
+        cgLibTest.when(mocked.stringReturnMethod("234")).thenReturn("test return on 234");
+
+        System.out.println(mocked.stringReturnMethod("123"));
+        System.out.println(mocked.stringReturnMethod("234"));
 /*        Original original = new Original();
         Handler handler = new Handler(original);
         If f = (If) Proxy.newProxyInstance(If.class.getClassLoader(),

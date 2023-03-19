@@ -9,7 +9,7 @@ public class SomeClass {
         System.out.println("Annotated method called");
     }
 
-    public String stringReturnMethod(){
-        return "Henlo from someclass";
+    public String stringReturnMethod(String additiveString){
+        return "Henlo from someclass, passed:" + additiveString;
     }
 }
