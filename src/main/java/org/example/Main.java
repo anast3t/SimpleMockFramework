@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -13,6 +14,7 @@ public class Main {
 
         CGLibTest<SomeClass> cgLibTest = new CGLibTest<>(SomeClass.class);
 
+
         SomeClass mocked = cgLibTest.getMock();
 
         Class<?>[] paramTypes = new Class<?>[]{String.class};
@@ -20,9 +22,19 @@ public class Main {
 
         cgLibTest.when(mocked.stringReturnMethod("123")).thenReturn("test return on 123");
         cgLibTest.when(mocked.stringReturnMethod("234")).thenReturn("test return on 234");
+        cgLibTest.when(mocked.stringReturnMethod("hell")).thenThrow(new IOException());
 
         System.out.println(mocked.stringReturnMethod("123"));
         System.out.println(mocked.stringReturnMethod("234"));
+        try {
+            System.out.println(mocked.stringReturnMethod("hell"));
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+//        CGLibTest<Color> test2 = new CGLibTest<>(Color.class);
+//        test2.when(Color.average(1,2,3)).thenReturn("hello with static method");
+
 /*        Original original = new Original();
         Handler handler = new Handler(original);
         If f = (If) Proxy.newProxyInstance(If.class.getClassLoader(),
@@ -64,5 +76,6 @@ public class Main {
             return null;
         }
     }*/
+
 }
 

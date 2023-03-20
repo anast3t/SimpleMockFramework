@@ -15,7 +15,7 @@ public class CGLibTestRT<R> { //Return - throw
         parent.addAction(called, value);
     }
 
-    public void thenThrow(Class<? extends Exception> exception){
-
+    public void thenThrow(Exception exception) throws InstantiationException, IllegalAccessException {
+        parent.addException(called, exception);
     }
 }

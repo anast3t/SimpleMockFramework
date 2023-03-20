@@ -59,4 +59,7 @@ public class CGLibTest <T> {
         this.actionMap.put(meth, ret);
     }
 
+    protected void addException(Pair<Method, Object[]> methodPair, Exception ret){
+        this.actionMap.put(methodPair, ret);
+    }
 }
