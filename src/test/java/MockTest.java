@@ -1,13 +1,9 @@
-import org.example.Mock;
-import org.example.Mocker;
-import org.example.SomeClass;
-import org.example.SomeInterface;
+import org.example.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.Map;
 
 
 public class MockTest {
@@ -17,6 +13,11 @@ public class MockTest {
     @Mock
     public SomeInterface itest;
 
+    public static TestClass testClass;
+
+/*    @Mock
+    public static Map<Integer, String> staticIMap;*/
+
 
     @BeforeEach
     public void setUp() throws IllegalAccessException {
@@ -25,7 +26,7 @@ public class MockTest {
 
     @Test
     public void mockEmpty() {
-        assertNull(test.stringReturnMethod("123"));
+        Assertions.assertNull(test.stringReturnMethod("123"));
     }
 
     @Test
@@ -41,7 +42,7 @@ public class MockTest {
     public void mockThrow() {
         Mocker.when(test.integerReturnMethod(1984)).thenThrow(new IllegalArgumentException());
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
+        Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
             test.integerReturnMethod(1984);
         });
     }
@@ -52,5 +53,21 @@ public class MockTest {
         Mocker.when(test.stringReturnMethod("uh")).thenReturn("im out of generator");
 
         Assertions.assertEquals("im out of generator", itest.someGenerator().stringReturnMethod("uh"));
+    }
+
+    @Test
+    public void mockStatic() throws IllegalAccessException {
+        MockTest.testClass = new TestClass();
+
+        Mocker
+                .when(
+                        TestClass.someClassStatic.stringReturnMethod("test")
+                )
+                .thenReturn("static call");
+
+        Assertions.assertEquals(
+                TestClass.someClassStatic.stringReturnMethod("test"),
+                "static call"
+        );
     }
 }
