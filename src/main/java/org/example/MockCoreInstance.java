@@ -6,13 +6,16 @@ import net.sf.cglib.proxy.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class CGLibTest <T> {
+public class MockCoreInstance<T> {
     private final Enhancer enhancer;
     private final Class<T> operatingClass;
-    private final HashMap<Pair<Method, Object[]>, Pair<Object, Boolean>> actionMap = new HashMap<>();
+    private final HashMap<
+            Pair<Method, Object[]>,
+            Pair<Object, Boolean>
+            > actionMap = new HashMap<>();
 
     protected Pair<Method, Object[]> lastCalled = new Pair<>();
-    CGLibTest(Class<T> mocking) {
+    MockCoreInstance(Class<T> mocking) {
         enhancer = new Enhancer();
         operatingClass = mocking;
         enhancer.setSuperclass(operatingClass);
@@ -21,11 +24,12 @@ public class CGLibTest <T> {
         enhancer.setCallback((InvocationHandler) (o, method, objects) -> {
 //            System.out.println(Arrays.toString(objects));
 
-            if (!method.getDeclaringClass().equals(operatingClass)) {
+            if (!method.getDeclaringClass().isAssignableFrom(operatingClass)) {
                 throw new Exception("Class not correct");
             }
 
             this.lastCalled = new Pair<>(method, objects);
+            Mocker.updateLast(o);
 
             var key = new Pair<>(method, objects);
 
@@ -46,11 +50,12 @@ public class CGLibTest <T> {
     }
 
     public T getMock() {
-        return (T) enhancer.create();
+        T instance = (T) enhancer.create();
+        return instance;
     }
 
-    public <R> CGLibTestRT<R> when(R smt) {
-        return new CGLibTestRT<>(this); //TODO : спорное решение, мб внутри копировать
+    public <R> MockRT<R> when(R smt) {
+        return new MockRT<>(this);
     }
 
     protected void addReturn(Pair<Method, Object[]> meth, Object ret){
@@ -60,4 +65,6 @@ public class CGLibTest <T> {
     protected void addException(Pair<Method, Object[]> methodPair, Throwable ret){
         this.actionMap.put(methodPair, new Pair<>(ret, true));
     }
+
+    //TODO: can make real method invocation
 }
