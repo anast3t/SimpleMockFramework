@@ -6,25 +6,18 @@ import java.util.HashMap;
 public class Main {
     public static void main(String[] args) throws IllegalAccessException {
 
-        class TestClass{
-            @Mock
-            public SomeClass someClass;
-
-            TestClass() throws IllegalAccessException {
-               Mocker.init(this);
-            }
-        }
-
         TestClass testClass = new TestClass();
 
         Mocker
                 .when(testClass.someClass.stringReturnMethod("123"))
                 .thenReturn("hello, im from 123");
 
+        Mocker.when(TestClass.someClassStatic.stringReturnMethod("STATIC")).thenReturn("IM STATIC");
 
 
 
         System.out.println(testClass.someClass.stringReturnMethod("123"));
+        System.out.println(TestClass.someClassStatic.stringReturnMethod("STATIC"));
 
      /*   MockCoreInstance<SomeClass> cgLibTest = new MockCoreInstance<>(SomeClass.class);
 
