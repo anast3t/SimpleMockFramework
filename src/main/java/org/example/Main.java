@@ -18,11 +18,10 @@ public class Main {
         SomeClass mocked = cgLibTest.getMock();
 
         Class<?>[] paramTypes = new Class<?>[]{String.class};
-//        cgLibTest.whenThen(SomeClass.class.getDeclaredMethod("stringReturnMethod", paramTypes), "Hello from mocked method!!!");
 
         cgLibTest.when(mocked.stringReturnMethod("123")).thenReturn("test return on 123");
         cgLibTest.when(mocked.stringReturnMethod("234")).thenReturn("test return on 234");
-        cgLibTest.when(mocked.stringReturnMethod("hell")).thenThrow(new IOException());
+        cgLibTest.when(mocked.stringReturnMethod("hell")).thenThrow(new IOException("Hello from exception"));
 
         System.out.println(mocked.stringReturnMethod("123"));
         System.out.println(mocked.stringReturnMethod("234"));

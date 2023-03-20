@@ -2,17 +2,14 @@ package org.example;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.InvocationHandler;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.*;
 
 public class CGLibTest <T> {
     private final Enhancer enhancer;
     private final Class<T> operatingClass;
-    private Class<?> generatedClass;
-    private HashMap<Pair<Method, Object[]>, Object> actionMap = new HashMap<>();
+    private final HashMap<Pair<Method, Object[]>, Pair<Object, Boolean>> actionMap = new HashMap<>();
 
     protected Pair<Method, Object[]> lastCalled = new Pair<>();
     CGLibTest(Class<T> mocking) {
@@ -32,7 +29,7 @@ public class CGLibTest <T> {
 
             var key = new Pair<>(method, objects);
 
-            Object returnValue = actionMap
+            Pair<Object, Boolean> returnValue = actionMap
                     .entrySet()
                     .stream()
                     .filter(el -> el.getKey().equals(key))
@@ -41,25 +38,26 @@ public class CGLibTest <T> {
                     .orElse(null);
             // TODO: загадка почему через get не тянет (ответ - нет глубокого сравнения и сравнения по массивам видимо)
 
-            return returnValue;
+            if(returnValue != null && returnValue.right){
+                throw (Throwable) returnValue.left;
+            }
+            return returnValue != null ? returnValue.left : null;
         });
     }
 
     public T getMock() {
-        T returnValue = (T) enhancer.create();
-        generatedClass = returnValue.getClass();
-        return returnValue;
+        return (T) enhancer.create();
     }
 
     public <R> CGLibTestRT<R> when(R smt) {
-        return new CGLibTestRT<R>(this); //TODO : спорное решение, мб внутри копировать
+        return new CGLibTestRT<>(this); //TODO : спорное решение, мб внутри копировать
     }
 
-    protected void addAction(Pair<Method, Object[]> meth, Object ret){
-        this.actionMap.put(meth, ret);
+    protected void addReturn(Pair<Method, Object[]> meth, Object ret){
+        this.actionMap.put(meth, new Pair<>(ret, false));
     }
 
-    protected void addException(Pair<Method, Object[]> methodPair, Exception ret){
-        this.actionMap.put(methodPair, ret);
+    protected void addException(Pair<Method, Object[]> methodPair, Throwable ret){
+        this.actionMap.put(methodPair, new Pair<>(ret, true));
     }
 }

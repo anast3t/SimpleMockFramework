@@ -12,10 +12,10 @@ public class CGLibTestRT<R> { //Return - throw
     private final Pair<Method, Object[]> called;
 
     public void thenReturn(R value){
-        parent.addAction(called, value);
+        parent.addReturn(called, value);
     }
 
-    public void thenThrow(Exception exception) throws InstantiationException, IllegalAccessException {
+    public void thenThrow (Throwable exception) {
         parent.addException(called, exception);
     }
 }
