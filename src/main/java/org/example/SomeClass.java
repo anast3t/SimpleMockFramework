@@ -1,5 +1,7 @@
 package org.example;
 
+import com.mocker.Mocker;
+
 public class SomeClass {
     public void someMethod() {
         System.out.println("Plain method called");
@@ -13,11 +15,12 @@ public class SomeClass {
         return val+1;
     }
 
-    public static String staticStringReturnMethod(String value){
+    public static String staticStringReturnMethod(String value, Integer smt){
+
         return value;
     }
 
-    public static void testPrint(){
-        System.out.println("Initial testPrint");
+    public static Integer testPrint(){
+        return 1;
     }
 }

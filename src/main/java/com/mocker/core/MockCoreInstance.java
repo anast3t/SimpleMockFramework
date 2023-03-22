@@ -67,8 +67,8 @@ public class MockCoreInstance<T> {
         return new MockRT<>(this);
     }
 
-    protected void addReturn(Pair<Method, Object[]> meth, Object ret){
-        this.actionMap.put(meth, new Pair<>(ret, false));
+    protected void addReturn(Pair<Method, Object[]> methodPair, Object ret){
+        this.actionMap.put(methodPair, new Pair<>(ret, false));
     }
 
     protected void addException(Pair<Method, Object[]> methodPair, Throwable ret){

@@ -20,14 +20,25 @@ public class Pair<Left, Right> {
     public boolean equals(Object obj) {
         if(obj instanceof Pair<?, ?>){
             boolean l = true;
-            if(left.getClass().isArray())
+            if(left == null){
+                if(((Pair<?, ?>) obj).left != null)
+                    l = false;
+            }
+            else if(left.getClass().isArray())
                 l = Arrays.deepEquals(((Object[]) left), ((Object[])((Pair<?, ?>) obj).left));
             else
                 l = left.equals(((Pair<?, ?>) obj).left);
 
             boolean r = true;
-            if(right.getClass().isArray())
-                r = Arrays.deepEquals(((Object[]) right), ((Object[])((Pair<?, ?>) obj).right));
+            if(right == null){
+                if(((Pair<?, ?>) obj).right != null)
+                    r = false;
+            }
+            else if(right.getClass().isArray())
+                r = Arrays.deepEquals(
+                        ((Object[]) right),
+                        ((Object[])
+                                ((Pair<?, ?>) obj).right));
             else
                 r = right.equals(((Pair<?, ?>) obj).right);
 
