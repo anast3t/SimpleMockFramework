@@ -1,18 +1,17 @@
-package org.example;
+package com.mocker.utils;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class Pair<Left, Right> {
     public Left left;
     public Right right;
 
-    Pair(Left left, Right right){
+    public Pair(Left left, Right right){
         this.left = left;
         this.right = right;
     }
 
-    Pair(){
+    public Pair(){ //TODO: protected
         this.left = null;
         this.right = null;
     }

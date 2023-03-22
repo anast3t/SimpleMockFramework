@@ -1,9 +1,11 @@
+import com.mocker.Mocker;
+import com.mocker.annotations.Mock;
 import org.example.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
+import java.util.concurrent.CompletionException;
 
 
 public class MockTest {
@@ -14,9 +16,6 @@ public class MockTest {
     public SomeInterface itest;
 
     public static TestClass testClass;
-
-/*    @Mock
-    public static Map<Integer, String> staticIMap;*/
 
 
     @BeforeEach

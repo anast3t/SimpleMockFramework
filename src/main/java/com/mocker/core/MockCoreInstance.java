@@ -1,7 +1,9 @@
-package org.example;
+package com.mocker.core;
 
+import com.mocker.Mocker;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.InvocationHandler;
+import com.mocker.utils.Pair;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -10,12 +12,18 @@ public class MockCoreInstance<T> {
     private final Enhancer enhancer;
     private final Class<T> operatingClass;
     private final HashMap<
-            Pair<Method, Object[]>,
-            Pair<Object, Boolean>
+            Pair<Method, Object[]>, //Вызываемый метод - аргументы метода
+            Pair<Object, Boolean> // Возвращаемое значение - является ли значение эксепшном
             > actionMap = new HashMap<>();
 
-    protected Pair<Method, Object[]> lastCalled = new Pair<>();
-    MockCoreInstance(Class<T> mocking) {
+    private final HashMap<
+            Pair<Class<?>, Object[]>, //
+            Pair<Object, Boolean>
+            > staticActionMap = new HashMap<>();
+
+    protected Pair<Method, Object[]> lastCalledMethod = new Pair<>();
+
+    public MockCoreInstance(Class<T> mocking) { //TODO: protected
         enhancer = new Enhancer();
         operatingClass = mocking;
         enhancer.setSuperclass(operatingClass);
@@ -23,12 +31,13 @@ public class MockCoreInstance<T> {
 
         enhancer.setCallback((InvocationHandler) (o, method, objects) -> {
 //            System.out.println(Arrays.toString(objects));
+//            System.out.println(o.toString());
 
             if (!method.getDeclaringClass().isAssignableFrom(operatingClass)) {
                 throw new Exception("Class not correct");
             }
 
-            this.lastCalled = new Pair<>(method, objects);
+            this.lastCalledMethod = new Pair<>(method, objects);
             Mocker.updateLast(o);
 
             var key = new Pair<>(method, objects);

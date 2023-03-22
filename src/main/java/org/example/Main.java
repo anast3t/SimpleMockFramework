@@ -1,51 +1,37 @@
 package org.example;
 
+import com.mocker.Mocker;
+import com.mocker.core.MockCoreInstance;
+import javassist.*;
+import javassist.bytecode.ClassFile;
+
 import java.io.IOException;
-import java.util.HashMap;
+import java.lang.instrument.ClassDefinition;
+import java.lang.instrument.UnmodifiableClassException;
+import java.lang.reflect.Method;
 
 public class Main {
-    public static void main(String[] args) throws IllegalAccessException {
+    public static void main(String[] args) throws IllegalAccessException, NotFoundException, CannotCompileException, NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, UnmodifiableClassException, RedefineClassAgent.FailedToLoadAgentException {
+        // find a reference to the class and method you wish to inject
+        ClassPool classPool = ClassPool.getDefault();
+        CtClass ctClass = classPool.get(SomeClass.class.getCanonicalName());
+        ctClass.stopPruning(true);
 
-        TestClass testClass = new TestClass();
+        // javaassist freezes methods if their bytecode is saved
+        // defrost so we can still make changes.
+        if (ctClass.isFrozen()) {
+            ctClass.defrost();
+        }
 
-        Mocker
-                .when(testClass.someClass.stringReturnMethod("123"))
-                .thenReturn("hello, im from 123");
+        CtMethod method = ctClass.getDeclaredMethod("testPrint"); // populate this from ctClass however you wish
 
-        Mocker.when(TestClass.someClassStatic.stringReturnMethod("STATIC")).thenReturn("IM STATIC");
+        method.insertBefore("{ System.out.println(\"Wheeeeee!\"); }");
+        byte[] bytecode = ctClass.toBytecode();
 
+        ClassDefinition definition = new ClassDefinition(Class.forName(SomeClass.class.getCanonicalName()), bytecode);
+        RedefineClassAgent.redefineClasses(definition);
 
-
-        System.out.println(testClass.someClass.stringReturnMethod("123"));
-        System.out.println(TestClass.someClassStatic.stringReturnMethod("STATIC"));
-
-     /*   MockCoreInstance<SomeClass> cgLibTest = new MockCoreInstance<>(SomeClass.class);
-
-        SomeClass mocked = cgLibTest.getMock();
-        SomeClass mocked2 = cgLibTest.getMock();
-
-
-        cgLibTest.when(mocked.stringReturnMethod("123")).thenReturn("test return on 123");
-        cgLibTest.when(mocked.stringReturnMethod("234")).thenReturn("test return on 234");
-        cgLibTest.when(mocked.stringReturnMethod("hell")).thenThrow(new IOException("Hello from exception"));
-
-        System.out.println(mocked.stringReturnMethod("123"));
-        System.out.println(mocked.stringReturnMethod("234"));
-        try {
-            System.out.println(mocked.stringReturnMethod("hell"));
-        } catch (Exception e){
-            throw new Exception(e.getMessage());
-        }*/
-
-//        CGLibTest<Color> test2 = new CGLibTest<>(Color.class);
-//        test2.when(Color.average(1,2,3)).thenReturn("hello with static method");
-
-/*        Original original = new Original();
-        Handler handler = new Handler(original);
-        If f = (If) Proxy.newProxyInstance(If.class.getClassLoader(),
-                new Class[] { If.class },
-                handler);
-        f.originalMethod("Hallo");*/
+        SomeClass.testPrint();
     }
 }
 

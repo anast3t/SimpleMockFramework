@@ -1,5 +1,8 @@
 package org.example;
 
+import com.mocker.Mocker;
+import com.mocker.annotations.Mock;
+
 public class TestClass{
     @Mock
     public SomeClass someClass;

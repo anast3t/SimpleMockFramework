@@ -1,7 +1,10 @@
-package org.example;
+package com.mocker;
+
+import com.mocker.annotations.Mock;
+import com.mocker.core.MockCoreInstance;
+import com.mocker.core.MockRT;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -30,7 +33,7 @@ public class Mocker {
         return instanceMap.get(lastCalled).when(smt);
     }
 
-    protected static void updateLast(Object o){
+    public static void updateLast(Object o){
         lastCalled = o;
-    }
+    } //TODO: protected
 }

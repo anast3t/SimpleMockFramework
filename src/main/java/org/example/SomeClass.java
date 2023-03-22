@@ -12,4 +12,12 @@ public class SomeClass {
     public Integer integerReturnMethod(Integer val){
         return val+1;
     }
+
+    public static String staticStringReturnMethod(String value){
+        return value;
+    }
+
+    public static void testPrint(){
+        System.out.println("Initial testPrint");
+    }
 }
