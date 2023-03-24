@@ -25,7 +25,6 @@ public class Mocker {
         DYNAMIC, STATIC, IDLE
     }
     private static LastCalledOrder lastCalledOrder = LastCalledOrder.IDLE;
-    private static Boolean callLock = false;
 
     private static final Map<Object, MockCoreInstance<?>> instanceMap = new IdentityHashMap<>();
 
@@ -51,13 +50,12 @@ public class Mocker {
         }
     }
 
-    public static <R> IMockRT<R> when(R smt) {
+    public static <R> IMockRT<R> when(R smt) throws InstanceNotFoundException {
         if(lastCalledOrder.equals(LastCalledOrder.DYNAMIC)){
             return instanceMap.get(lastCalled).when(smt);
         }else if (lastCalledOrder.equals(LastCalledOrder.STATIC)){
             return new MockRTS<R>(lastCalledStatic);
-        } else return null;
-//        else throw new InstanceNotFoundException("");
+        } else throw new InstanceNotFoundException("Last call is not initialized");
 
     }
 
@@ -65,16 +63,11 @@ public class Mocker {
 
     public static void updateLast(Object o){
         lastCalled = o;
-        if(!callLock)
-            lastCalledOrder = LastCalledOrder.DYNAMIC;
+        lastCalledOrder = LastCalledOrder.DYNAMIC;
     } //TODO: protected
 
     public static void updateLastStatic(Pair<Pair<Class<?>, String>, Object[]> classMethodPair){
         lastCalledStatic = classMethodPair;
-        if(!callLock)
-            lastCalledOrder = LastCalledOrder.STATIC;
+        lastCalledOrder = LastCalledOrder.STATIC;
     }
-//    public static void test(){
-//        System.out.println("smt");
-//    }
 }

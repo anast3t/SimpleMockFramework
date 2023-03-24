@@ -13,4 +13,5 @@ public class TestClass{
     public TestClass() throws IllegalAccessException {
         Mocker.init(this);
     }
+
 }

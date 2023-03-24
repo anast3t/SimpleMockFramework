@@ -5,19 +5,18 @@ import com.mocker.core.MockCoreInstance;
 import javassist.*;
 import javassist.bytecode.ClassFile;
 
+import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.UnmodifiableClassException;
 import java.lang.reflect.Method;
 
 public class Main {
-    public static void main(String[] args) throws IllegalAccessException, NotFoundException, CannotCompileException, NoSuchMethodException, IOException, InstantiationException, ClassNotFoundException, UnmodifiableClassException, RedefineClassAgent.FailedToLoadAgentException {
+    public static void main(String[] args) throws Throwable {
 
         SomeClass someClass = Mocker.mock(SomeClass.class);
 
         Mocker.when(SomeClass.staticStringReturnMethod("123", 123)).thenReturn("CHLENY");
-//        System.out.println(SomeClass.testPrint());
-
         System.out.println(SomeClass.staticStringReturnMethod("123", 123));
 
         // find a reference to the class and method you wish to inject

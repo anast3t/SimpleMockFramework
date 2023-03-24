@@ -52,4 +52,12 @@ public class Pair<Left, Right> {
         this.left = null;
         this.right = null;
     }
+
+    @Override
+    public String toString() {
+        return "Pair{" +
+                "left=" + left +
+                ", right=" + right +
+                '}';
+    }
 }

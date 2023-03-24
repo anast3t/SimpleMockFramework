@@ -15,12 +15,11 @@ public class SomeClass {
         return val+1;
     }
 
-    public static String staticStringReturnMethod(String value, Integer smt) throws Exception{
-
+    public static String staticStringReturnMethod(String value, Integer smt){
         return value;
     }
 
-    public static Integer testPrint(){
-        return 1;
-    }
+//    public static Integer testPrint(){
+//        return 1;
+//    }
 }

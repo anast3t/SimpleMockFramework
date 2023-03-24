@@ -29,8 +29,8 @@ public class MockStaticCoreInstance {
             CtClass ctClass = classPool.get(mocking.getCanonicalName());
 
             ctClass.stopPruning(true);
-            // javaassist freezes methods if their bytecode is saved
-            // defrost so we can still make changes.
+            // javassist freezes methods if their bytecode is saved
+            // defrost, so we can still make changes.
             if (ctClass.isFrozen()) {
                 ctClass.defrost();
             }
@@ -46,22 +46,32 @@ public class MockStaticCoreInstance {
                 ctClass.removeMethod(method);
 
                 String callString = "{" +
-                        " Pair<Object, Boolean> returnValue = %s.upraiseStaticMethod(%s.class, \"%s\", %s.class, $args); " +
-                        "if(returnValue != null && returnValue.right){" +
-                        "throw (Throwable) returnValue.left;" +
+                        "%s returnValue = %s#upraiseStaticMethod(%s.class, \"%s\", %s.class, $args);" + //4
+                        "if(((%s) returnValue) != null){" +
+                        "if(((%s)((%s) returnValue).right).equals(java.lang.Boolean.TRUE)){" +
+                        "throw (Throwable) ((%s) returnValue).left;" +
                         "}" +
-                        "return (%s) (returnValue != null ? returnValue.left : null);" +
+                        "return (%s) ((%s) returnValue).left;" +
+                        "}" +
+                        "return (%s) null;" +
                         "}";
 
                 String body = String.format(callString,
-//                        method.getReturnType().getName(),
+                        Object.class.getCanonicalName(),
                         MockStaticCoreInstance.class.getCanonicalName(),
                         mocking.getCanonicalName(),
                         method.getMethodInfo().getName(),
+                        Pair.class.getCanonicalName(),
+                        Pair.class.getCanonicalName(),
+                        Boolean.class.getCanonicalName(),
+                        Pair.class.getCanonicalName(),
+                        Pair.class.getCanonicalName(),
                         method.getReturnType().getName(),
-                        method.getReturnType().getName());
+                        Pair.class.getCanonicalName(),
+                        method.getReturnType().getName()
+                );
 
-//                System.out.println(body);
+                System.out.println(body);
 
                 method.setBody(body);
 
@@ -79,7 +89,7 @@ public class MockStaticCoreInstance {
         }
     }
 
-    public static Pair<Object, Boolean> upraiseStaticMethod(Class<?> clazz, String methodname, Class<?> returnType, Object[] params) {
+    public static Object upraiseStaticMethod(Class<?> clazz, String methodname, Class<?> returnType, Object[] params) {
         System.out.println("Got uprise in: " + clazz.getName() + "." + methodname);
 
         Pair<Class<?>, String> classMethodPair = new Pair<>(clazz, methodname);
@@ -95,8 +105,6 @@ public class MockStaticCoreInstance {
                 .orElse(null);
 
         return returnValue;
-//        return returnValue == null ? returnType.cast(null) : returnValue.left;
-
     }
 
     public static void addReturn(Pair<Pair<Class<?>, String>, Object[]> classMethodPair, Object returnValue) {
