@@ -30,8 +30,6 @@ public class MockCoreInstance<T> {
 
 
         enhancer.setCallback((InvocationHandler) (o, method, objects) -> {
-//            System.out.println(Arrays.toString(objects));
-//            System.out.println(o.toString());
 
             if (!method.getDeclaringClass().isAssignableFrom(operatingClass)) {
                 throw new Exception("Class not correct");

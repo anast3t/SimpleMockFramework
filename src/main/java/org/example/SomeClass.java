@@ -15,7 +15,7 @@ public class SomeClass {
         return val+1;
     }
 
-    public static String staticStringReturnMethod(String value, Integer smt){
+    public static String staticStringReturnMethod(String value, Integer smt) throws Exception{
 
         return value;
     }

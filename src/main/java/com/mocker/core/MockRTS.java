@@ -13,10 +13,10 @@ public class MockRTS<R> implements IMockRT<R> {
     private final Pair<Pair<Class<?>, String>, Object[]> called;
 
     public void thenReturn(R value){
-        Mocker.addReturn(called, value);
+        MockStaticCoreInstance.addReturn(called, value);
     }
 
     public void thenThrow (Throwable exception) {
-//        Mocker.addException(called, exception);
+        MockStaticCoreInstance.addException(called, exception);
     }
 }
