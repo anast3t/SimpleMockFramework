@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c0d9106-0edc-4b38-8c74-2eee7d70469d" name="Changes" comment="new user test commit">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -341,7 +342,7 @@
       <workItem from="1679482495753" duration="1610000" />
       <workItem from="1679487575957" duration="3102000" />
       <workItem from="1679505452532" duration="36221000" />
-      <workItem from="1679734602943" duration="928000" />
+      <workItem from="1679734602943" duration="1685000" />
     </task>
     <task id="LOCAL-00001" summary="CGLibTest">
       <created>1678729030706</created>
