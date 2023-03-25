@@ -34,11 +34,6 @@ public class Pair<Left, Right> {
         return Objects.hash(left, right);
     }
 
-    public void flush(){
-        this.left = null;
-        this.right = null;
-    }
-
     @Override
     public String toString() {
         return "Pair{" +
