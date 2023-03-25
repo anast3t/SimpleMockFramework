@@ -11,7 +11,7 @@ import java.lang.instrument.UnmodifiableClassException;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-public class MockStaticCoreInstance {
+public class MockStaticCore {
 
     private static final Map<
             Pair<
@@ -38,7 +38,6 @@ public class MockStaticCoreInstance {
             CtMethod[] methods = ctClass.getDeclaredMethods(); //get static - accessFlag - 1001 (9)
 
             for (CtMethod method : methods) {
-//            CtClass[] params = method.getParameterTypes();
 
                 if (method.getModifiers() != 9)
                     continue;
@@ -56,18 +55,23 @@ public class MockStaticCoreInstance {
                         "return (%s) null;" +
                         "}";
 
+                String pairCN = Pair.class.getCanonicalName();
+                String objectCN = Object.class.getCanonicalName();
+                String mockStaticCoreCN = MockStaticCore.class.getCanonicalName();
+                String boolCN = Boolean.class.getCanonicalName();
+
                 String body = String.format(callString,
-                        Object.class.getCanonicalName(),
-                        MockStaticCoreInstance.class.getCanonicalName(),
+                        objectCN,
+                        mockStaticCoreCN,
                         mocking.getCanonicalName(),
                         method.getMethodInfo().getName(),
-                        Pair.class.getCanonicalName(),
-                        Pair.class.getCanonicalName(),
-                        Boolean.class.getCanonicalName(),
-                        Pair.class.getCanonicalName(),
-                        Pair.class.getCanonicalName(),
+                        pairCN,
+                        pairCN,
+                        boolCN,
+                        pairCN,
+                        pairCN,
                         method.getReturnType().getName(),
-                        Pair.class.getCanonicalName(),
+                        pairCN,
                         method.getReturnType().getName()
                 );
 

@@ -35,6 +35,8 @@ public class MockTest {
 
         Mocker.when(test.integerReturnMethod(123)).thenReturn(322);
         Assertions.assertEquals(322, test.integerReturnMethod(123));
+
+        Mocker.when(test.testPrint()).thenReturn(42);
     }
 
     @Test

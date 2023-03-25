@@ -3,15 +3,8 @@ package com.mocker;
 import com.mocker.annotations.Mock;
 import com.mocker.core.*;
 import com.mocker.utils.Pair;
-import javassist.*;
-import org.example.RedefineClassAgent;
-import org.example.SomeClass;
-import org.example.TestClass;
 
 import javax.management.InstanceNotFoundException;
-import java.io.IOException;
-import java.lang.instrument.ClassDefinition;
-import java.lang.instrument.UnmodifiableClassException;
 import java.lang.reflect.Field;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -33,7 +26,7 @@ public class Mocker {
         T instance = core.getMock();
         instanceMap.put(instance, core);
 
-        MockStaticCoreInstance.defineStatic(mocking);
+        MockStaticCore.defineStatic(mocking);
 
         return instance;
     }

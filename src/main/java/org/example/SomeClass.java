@@ -19,7 +19,7 @@ public class SomeClass {
         return value;
     }
 
-//    public static Integer testPrint(){
-//        return 1;
-//    }
+    public Integer testPrint(){
+        return 1;
+    }
 }

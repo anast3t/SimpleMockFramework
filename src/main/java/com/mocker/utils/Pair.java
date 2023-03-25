@@ -1,6 +1,9 @@
 package com.mocker.utils;
 
 import java.util.Arrays;
+import java.util.Objects;
+
+import static com.mocker.utils.Functions.comparator;
 
 public class Pair<Left, Right> {
     public Left left;
@@ -19,33 +22,16 @@ public class Pair<Left, Right> {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Pair<?, ?>){
-            boolean l = true;
-            if(left == null){
-                if(((Pair<?, ?>) obj).left != null)
-                    l = false;
-            }
-            else if(left.getClass().isArray())
-                l = Arrays.deepEquals(((Object[]) left), ((Object[])((Pair<?, ?>) obj).left));
-            else
-                l = left.equals(((Pair<?, ?>) obj).left);
-
-            boolean r = true;
-            if(right == null){
-                if(((Pair<?, ?>) obj).right != null)
-                    r = false;
-            }
-            else if(right.getClass().isArray())
-                r = Arrays.deepEquals(
-                        ((Object[]) right),
-                        ((Object[])
-                                ((Pair<?, ?>) obj).right));
-            else
-                r = right.equals(((Pair<?, ?>) obj).right);
-
-
+            Boolean l = comparator(left, ((Pair<?, ?>) obj).left);
+            Boolean r = comparator(right, ((Pair<?, ?>) obj).right);
             return l&&r;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(left, right);
     }
 
     public void flush(){
