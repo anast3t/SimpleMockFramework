@@ -2,6 +2,7 @@ package com.mocker.core;
 
 import com.mocker.Mocker;
 import com.mocker.utils.Pair;
+import com.mocker.utils.Triple;
 import javassist.*;
 import org.example.RedefineClassAgent;
 
@@ -14,11 +15,8 @@ import java.util.Map;
 public class MockStaticCore {
 
     private static final Map<
-            Pair<
-                    Pair<Class<?>, String>, // класс - метод
-                    Object[] // параметры
-                    >,
-            Pair<Object, Boolean> // возвращаемые значения (возврат/эксепшн)
+            Triple<Class<?>, String, Object[]>,
+            Pair<Object, Boolean>
             > classMap = new IdentityHashMap<>();
 
     public static void defineStatic(Class<?> mocking) {
@@ -75,7 +73,7 @@ public class MockStaticCore {
                         method.getReturnType().getName()
                 );
 
-                System.out.println(body);
+//                System.out.println(body);
 
                 method.setBody(body);
 
@@ -87,17 +85,15 @@ public class MockStaticCore {
             ClassDefinition definition = new ClassDefinition(Class.forName(mocking.getCanonicalName()), bytecode);
             RedefineClassAgent.redefineClasses(definition);
 
-        } catch (UnmodifiableClassException | CannotCompileException | NotFoundException | IOException |
-                 RedefineClassAgent.FailedToLoadAgentException | ClassNotFoundException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     public static Object upraiseStaticMethod(Class<?> clazz, String methodname, Class<?> returnType, Object[] params) {
-        System.out.println("Got uprise in: " + clazz.getName() + "." + methodname);
+//        System.out.println("Got uprise in: " + clazz.getName() + "." + methodname);
 
-        Pair<Class<?>, String> classMethodPair = new Pair<>(clazz, methodname);
-        Pair<Pair<Class<?>, String>, Object[]> key = new Pair<>(classMethodPair, params);
+        Triple<Class<?>, String, Object[]> key = new Triple<>(clazz, methodname, params);
         Mocker.updateLastStatic(key);
 
         Pair<Object, Boolean> returnValue = classMap
@@ -111,12 +107,12 @@ public class MockStaticCore {
         return returnValue;
     }
 
-    public static void addReturn(Pair<Pair<Class<?>, String>, Object[]> classMethodPair, Object returnValue) {
-        classMap.put(new Pair<>(classMethodPair.left, classMethodPair.right), new Pair<>(returnValue, false));
+    public static void addReturn(Triple<Class<?>, String, Object[]> classMethodArgs, Object returnValue) {
+        classMap.put(classMethodArgs, new Pair<>(returnValue, false));
     }
 
-    public static void addException(Pair<Pair<Class<?>, String>, Object[]> classMethodPair, Throwable returnValue) {
-        classMap.put(new Pair<>(classMethodPair.left, classMethodPair.right), new Pair<>(returnValue, true));
+    public static void addException(Triple<Class<?>, String, Object[]> classMethodArgs, Throwable returnValue) {
+        classMap.put(classMethodArgs, new Pair<>(returnValue, true));
     }
 
 }

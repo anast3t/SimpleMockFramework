@@ -3,6 +3,7 @@ package com.mocker;
 import com.mocker.annotations.Mock;
 import com.mocker.core.*;
 import com.mocker.utils.Pair;
+import com.mocker.utils.Triple;
 
 import javax.management.InstanceNotFoundException;
 import java.lang.reflect.Field;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 public class Mocker {
     private static Object lastCalled;
-    public static Pair<Pair<Class<?>, String>, Object[]> lastCalledStatic;
+    public static Triple<Class<?>, String, Object[]> lastCalledStatic;
     private enum LastCalledOrder{
         DYNAMIC, STATIC, IDLE
     }
@@ -59,8 +60,8 @@ public class Mocker {
         lastCalledOrder = LastCalledOrder.DYNAMIC;
     } //TODO: protected
 
-    public static void updateLastStatic(Pair<Pair<Class<?>, String>, Object[]> classMethodPair){
-        lastCalledStatic = classMethodPair;
+    public static void updateLastStatic(Triple<Class<?>, String, Object[]> classMethodArgs){
+        lastCalledStatic = classMethodArgs;
         lastCalledOrder = LastCalledOrder.STATIC;
     }
 }

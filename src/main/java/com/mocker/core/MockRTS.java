@@ -1,13 +1,14 @@
 package com.mocker.core;
 
 import com.mocker.utils.Pair;
+import com.mocker.utils.Triple;
 
 public class MockRTS<R> implements IMockRT<R> {
-    public MockRTS(Pair<Pair<Class<?>, String>, Object[]> lastCalledStatic){
+    public MockRTS(Triple<Class<?>, String, Object[]> lastCalledStatic){
         this.called = lastCalledStatic;
     }
 
-    private final Pair<Pair<Class<?>, String>, Object[]> called;
+    private final Triple<Class<?>, String, Object[]> called;
 
     public void thenReturn(R value){
         MockStaticCore.addReturn(called, value);
