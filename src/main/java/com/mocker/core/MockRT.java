@@ -14,12 +14,19 @@ public class MockRT<R> implements IMockRT<R> { //Return - throw
     private final Pair<Method, Object[]> called;
 
     public void thenReturn(R value){
-        parent.addReturn(called, value);
+        parent.addReturnAction(called, value);
     }
 
     public void thenThrow (Throwable exception) {
-        parent.addException(called, exception);
+        parent.addExceptionAction(called, exception);
     }
 
+    public void thenInitial(){
+        parent.addImplementedAction(called);
+    }
+
+    public void thenNull(){
+        parent.addNullAction(called);
+    }
 
 }

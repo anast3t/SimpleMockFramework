@@ -14,39 +14,24 @@ import java.lang.reflect.Method;
 public class Main {
     public static void main(String[] args) throws Throwable {
 
-        SomeClass someClass = Mocker.mock(SomeClass.class);
+        SomeClass someClass = new SomeClass();
 
-        Mocker.when(SomeClass.staticStringReturnMethod("123", 123)).thenReturn("CHLENY");
-        System.out.println(SomeClass.staticStringReturnMethod("123", 123));
+        MockCoreInstance<SomeClass> core = new MockCoreInstance<>(SomeClass.class, someClass);
 
-        // find a reference to the class and method you wish to inject
-/*        ClassPool classPool = ClassPool.getDefault();
-        CtClass ctClass = classPool.get(SomeClass.class.getCanonicalName());
-        ctClass.stopPruning(true);
+        someClass = core.getMock();
 
-        // javaassist freezes methods if their bytecode is saved
-        // defrost so we can still make changes.
-        if (ctClass.isFrozen()) {
-            ctClass.defrost();
-        }
+        core.when(someClass.integerReturnMethod(1)).thenReturn(123);
+        System.out.println(someClass.integerReturnMethod (1));
 
-        CtMethod method = ctClass.getDeclaredMethod("testPrint"); // populate this from ctClass however you wish
+        core.when(someClass.integerReturnMethod (1)).thenNull();
+        System.out.println(someClass.integerReturnMethod (1));
 
-        CtMethod[] methods = ctClass.getDeclaredMethods(); //get static - accessFlag - 1001 (9)
+        core.when(someClass.integerReturnMethod (1)).thenInitial();
+        System.out.println(someClass.integerReturnMethod (1));
 
-        CtClass[] params = method.getParameterTypes();
+//        core.when(someClass.integerReturnMethod ()).thenThrow(new Exception("123"));
+//        System.out.println(someClass.integerReturnMethod ());
 
-        ctClass.removeMethod(method);
-        method.setBody("{" + Mocker.class.getCanonicalName() +".test(); return 123;}");
-        ctClass.addMethod(method);
-
-        byte[] bytecode = ctClass.toBytecode();
-
-        ClassDefinition definition = new ClassDefinition(Class.forName(SomeClass.class.getCanonicalName()), bytecode);
-        RedefineClassAgent.redefineClasses(definition);
-
-
-        SomeClass.testPrint("123");*/
     }
 }
 

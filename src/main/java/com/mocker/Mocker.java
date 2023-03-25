@@ -22,8 +22,8 @@ public class Mocker {
 
     private static final Map<Object, MockCoreInstance<?>> instanceMap = new IdentityHashMap<>();
 
-    public static <T> T mock (Class<T> mocking) {
-        MockCoreInstance<T> core = new MockCoreInstance<>(mocking);
+    public static <T> T mock (Class<T> mocking, Object initialized) {
+        MockCoreInstance<T> core = new MockCoreInstance<>(mocking, initialized);
         T instance = core.getMock();
         instanceMap.put(instance, core);
 
@@ -32,13 +32,14 @@ public class Mocker {
         return instance;
     }
 
-
     public static void init(Object local) throws IllegalAccessException
     {
         Field[] fields =  local.getClass().getFields();
         for (Field f: fields) {
             if (f.getAnnotation(Mock.class) != null){
-                Object instance = mock(f.getType());
+                Object instance;
+                Object initialized = f.get(local);
+                instance = mock(f.getType(), initialized);
                 f.set(local, instance);
             }
         }

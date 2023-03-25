@@ -29,7 +29,7 @@ public class MockTest {
     }
 
     @Test
-    public void mockPrimitive() throws InstanceNotFoundException {
+    public void mockDynamicReturn() throws InstanceNotFoundException {
         Mocker.when(test.stringReturnMethod("123")).thenReturn("mocked");
         Assertions.assertEquals("mocked", test.stringReturnMethod("123"));
 
@@ -38,6 +38,8 @@ public class MockTest {
 
         Mocker.when(test.testPrint()).thenReturn(42);
     }
+
+
 
     @Test
     public void mockThrow() throws InstanceNotFoundException {
@@ -57,7 +59,7 @@ public class MockTest {
     }
 
     @Test
-    public void mockStatic() throws IllegalAccessException, InstanceNotFoundException {
+    public void mockStaticField() throws IllegalAccessException, InstanceNotFoundException {
         MockTest.testClass = new TestClass();
 
         Mocker
