@@ -4,19 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c0d9106-0edc-4b38-8c74-2eee7d70469d" name="Changes" comment="CGLibTest">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/RedefineClassAgent.java" afterDir="false" />
+    <list default="true" id="2c0d9106-0edc-4b38-8c74-2eee7d70469d" name="Changes" comment="new user test commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Mock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mocker/annotations/Mock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MockCoreInstance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mocker/core/MockCoreInstance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MockRT.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mocker/core/MockRT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Mocker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mocker/Mocker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Pair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mocker/utils/Pair.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/SomeClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/SomeClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/TestClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/TestClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/MockTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/MockTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,32 +68,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "last_opened_file_path": "/Users/anastet/IdeaProjects/nsu/MockFramework",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/anastet/IdeaProjects/nsu/MockFramework&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="org.example" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.MockTest">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/Library/Java/JavaVirtualMachines/corretto-11.0.17/Contents/Home" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -188,7 +177,7 @@
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
+        <option name="scriptParameters" value="" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -227,6 +216,74 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="MockTest.mockStaticClass" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;MockTest.mockStaticClass&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="MockTest" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+      <module name="MockFramework.test" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="corretto-11" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="MockTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea -Djdk.attach.allowAttachSelf=true" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <module name="MockFramework.test" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="corretto-11" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="MockTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea -Djdk.attach.allowAttachSelf=true" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="SimpleMockFramework" />
       <method v="2">
@@ -250,14 +307,17 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Application.Main" />
       <item itemvalue="Application.Unnamed" />
+      <item itemvalue="Application.Main" />
       <item itemvalue="Gradle.MockFramework [:Main.main()]" />
+      <item itemvalue="Gradle.MockTest.mockStaticClass" />
       <item itemvalue="Gradle.MockFramework [jar]" />
       <item itemvalue="Gradle.MockTest" />
+      <item itemvalue="JUnit.MockTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.MockTest.mockStaticClass" />
         <item itemvalue="Gradle.MockFramework [jar]" />
         <item itemvalue="Gradle.MockTest" />
         <item itemvalue="Application.Main" />
@@ -279,7 +339,9 @@
       <workItem from="1679308894282" duration="99000" />
       <workItem from="1679313102999" duration="6139000" />
       <workItem from="1679482495753" duration="1610000" />
-      <workItem from="1679487575957" duration="1834000" />
+      <workItem from="1679487575957" duration="3102000" />
+      <workItem from="1679505452532" duration="36221000" />
+      <workItem from="1679734602943" duration="928000" />
     </task>
     <task id="LOCAL-00001" summary="CGLibTest">
       <created>1678729030706</created>
@@ -288,7 +350,49 @@
       <option name="project" value="LOCAL" />
       <updated>1678729030706</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="restructure, javassist">
+      <created>1679489475308</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1679489475308</updated>
+    </task>
+    <task id="LOCAL-00003" summary="static when-return">
+      <created>1679520479702</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1679520479702</updated>
+    </task>
+    <task id="LOCAL-00004" summary="staic throw + core">
+      <created>1679661217812</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1679661217812</updated>
+    </task>
+    <task id="LOCAL-00005" summary="triple, util.funcs, renamed static core">
+      <created>1679725703692</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1679725703692</updated>
+    </task>
+    <task id="LOCAL-00006" summary="triple inserted">
+      <created>1679729982555</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1679729982555</updated>
+    </task>
+    <task id="LOCAL-00007" summary="new user test commit">
+      <created>1679731277818</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1679731277818</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -304,9 +408,38 @@
         </entry>
       </map>
     </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="CGLibTest" />
-    <option name="LAST_COMMIT_MESSAGE" value="CGLibTest" />
+    <MESSAGE value="restructure, javassist" />
+    <MESSAGE value="static when-return" />
+    <MESSAGE value="staic throw + core" />
+    <MESSAGE value="triple, util.funcs, renamed static core" />
+    <MESSAGE value="triple inserted" />
+    <MESSAGE value="new user test commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="new user test commit" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="GradleRunConfiguration">
+        <watch expression="classMap" language="JAVA" />
+        <watch expression="key" language="JAVA" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
