@@ -1,5 +1,6 @@
 package com.mocker.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Functions {
@@ -14,5 +15,17 @@ public class Functions {
 
         else
             return a.equals(b);
+    }
+
+    public static ArrayList<Object> recArr2ArrListConverter(Object[] array){
+        ArrayList<Object> result = new ArrayList<>();
+        for(Object element : array){
+            if(element.getClass().isArray()){
+                result.add(recArr2ArrListConverter((Object[]) element));
+            }
+            else
+                result.add(element);
+        }
+        return result;
     }
 }

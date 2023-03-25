@@ -8,7 +8,7 @@ public class SomeClass {
     }
 
     public String stringReturnMethod(String additiveString){
-        return "Henlo from someclass, passed:" + additiveString;
+        return "Hello from someclass, passed:" + additiveString;
     }
 
     public Integer integerReturnMethod(Integer val){

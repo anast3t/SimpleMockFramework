@@ -2,11 +2,13 @@ package com.mocker.core;
 
 import com.mocker.Mocker;
 import com.mocker.utils.ActionType;
+import com.mocker.utils.Functions;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.InvocationHandler;
 import com.mocker.utils.Pair;
 
+import javax.management.InstanceNotFoundException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -14,11 +16,11 @@ public class MockCoreInstance<T> {
     private final Enhancer enhancer;
     private final Class<T> operatingClass;
     private final HashMap<
-            Pair<Method, Object[]>, //Вызываемый метод - аргументы метода
+            Pair<Method, ArrayList<Object>>, //Вызываемый метод - аргументы метода
             Pair<Object, ActionType> // Возвращаемое значение - является ли значение эксепшном
             > actionMap = new HashMap<>();
 
-    protected Pair<Method, Object[]> lastCalledMethod = new Pair<>();
+    protected Pair<Method, ArrayList<Object>> lastCalledMethod = new Pair<>();
 
     public MockCoreInstance(Class<T> mocking, Object originalInstance) { //TODO: protected
         enhancer = new Enhancer();
@@ -37,19 +39,19 @@ public class MockCoreInstance<T> {
         return new MockRT<>(this);
     }
 
-    protected void addReturnAction(Pair<Method, Object[]> methodPair, Object ret){
+    protected void addReturnAction(Pair<Method, ArrayList<Object>> methodPair, Object ret){
         this.actionMap.put(methodPair, new Pair<>(ret, ActionType.RETURN));
     }
 
-    protected void addExceptionAction(Pair<Method, Object[]> methodPair, Throwable ret){
+    protected void addExceptionAction(Pair<Method, ArrayList<Object>> methodPair, Throwable ret){
         this.actionMap.put(methodPair, new Pair<>(ret, ActionType.THROW));
     }
 
-    protected void addNullAction(Pair<Method, Object[]> methodPair){
+    protected void addNullAction(Pair<Method, ArrayList<Object>> methodPair){
         this.actionMap.put(methodPair, new Pair<>(null, ActionType.NULL));
     }
 
-    protected void addImplementedAction(Pair<Method, Object[]> methodPair){
+    protected void addImplementedAction(Pair<Method, ArrayList<Object>> methodPair){
         this.actionMap.put(methodPair, new Pair<>(null, ActionType.IMPL));
     }
 
@@ -60,15 +62,14 @@ public class MockCoreInstance<T> {
                 throw new Exception("Class not correct");
             }
 
-            if(objects.length == 0)
-                objects = null;
+
+            ArrayList<Object> listedObjects = Functions.recArr2ArrListConverter(objects);
 
 
-
-            this.lastCalledMethod = new Pair<>(method, objects);
+            this.lastCalledMethod = new Pair<>(method, listedObjects);
             Mocker.updateLast(proxy);
 
-            var key = new Pair<>(method, objects);
+            var key = new Pair<>(method, listedObjects);
 
             Pair<Object, ActionType> returnPair = actionMap
                     .entrySet()
@@ -91,7 +92,7 @@ public class MockCoreInstance<T> {
                 case IMPL:
                     if(originalInstance != null){
                         return method.invoke(originalInstance, objects);
-                    } else return null;
+                    } else throw new InstanceNotFoundException("Can't find instance for running implemented method");
                 case RETURN:
                     return returnValue;
                 case THROW:
