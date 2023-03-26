@@ -14,7 +14,15 @@ public class SomeClass {
     }
 
     public SomeClass(){
+        someInt = 10;
+    }
 
+    public void setSomeInt(Integer someInt) {
+        this.someInt = someInt;
+    }
+
+    public Integer getSomeInt() {
+        return someInt;
     }
 
     public String stringReturnMethod(String additiveString){
@@ -22,18 +30,15 @@ public class SomeClass {
     }
 
     public Integer integerReturnMethod(Integer val){
-        return val+1;
+        return val+someInt;
     }
 
     public static String staticStringReturnMethod(String value, Integer smt){
-        return value;
+        Integer smt1 = smt + 100;
+        return "Got String: " + value + ", and Integer: " + smt1;
     }
 
     public Integer testPrint(){
-        return 1;
-    }
-
-    public Integer multiInput(Integer integer, String string, Boolean bool){
         return 1;
     }
 }

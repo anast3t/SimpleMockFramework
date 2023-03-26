@@ -1,6 +1,5 @@
 package com.mocker.core;
 
-import com.mocker.utils.Pair;
 import com.mocker.utils.Triple;
 
 import java.util.ArrayList;
@@ -14,21 +13,21 @@ public class MockRTS<R> implements IMockRT<R> {
 
     @Override
     public void thenReturn(R value){
-        MockStaticCore.addReturn(called, value);
+        MockStaticCore.addReturnAction(called, value);
     }
 
     @Override
     public void thenThrow (Throwable exception) {
-        MockStaticCore.addException(called, exception);
+        MockStaticCore.addExceptionAction(called, exception);
     }
 
     @Override
     public void thenNull() {
-
+        MockStaticCore.addNullAction(called);
     }
 
     @Override
     public void thenImplemented() {
-
+        MockStaticCore.addImplementedAction(called);
     }
 }

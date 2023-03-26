@@ -1,22 +1,17 @@
 import com.mocker.Mocker;
 import com.mocker.annotations.Mock;
 import org.example.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import javax.management.InstanceNotFoundException;
-import java.lang.reflect.UndeclaredThrowableException;
 
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MockTest {
     @Mock
-    public SomeClass test;
+    public SomeClass someClass;
 
     @Mock
-    public SomeInterface itest;
-
-    public static TestClass testClass;
+    public SomeInterface someInterface;
 
 
     @BeforeEach
@@ -25,110 +20,148 @@ public class MockTest {
     }
 
     @Test
+    @Order(1)
     public void dEmpty() {
-        Assertions.assertNull(test.stringReturnMethod("123"));
+        Assertions.assertNull(someClass.stringReturnMethod("123"));
     }
 
     @Test
+    @Order(2)
     public void dNull() throws InstanceNotFoundException {
-        Mocker.when(test.testPrint()).thenReturn(1);
-        Mocker.when(test.testPrint()).thenNull();
-        Assertions.assertNull(test.testPrint());
+        Mocker.when(someClass.testPrint()).thenReturn(1);
+        Mocker.when(someClass.testPrint()).thenNull();
+        Assertions.assertNull(someClass.testPrint());
     }
 
     @Test
+    @Order(3)
     public void dImplemented() throws InstanceNotFoundException {
-        Mocker.when(test.stringReturnMethod("123")).thenImplemented();
+        Mocker.when(someClass.stringReturnMethod("123")).thenImplemented();
         Assertions.assertEquals(
                 "Hello from someclass, passed:"+"123",
-                test.stringReturnMethod("123")
+                someClass.stringReturnMethod("123")
         );
     }
 
     @Test
+    @Order(4)
     public void dReturn() throws InstanceNotFoundException {
-        Mocker.when(test.integerReturnMethod(1)).thenReturn(123);
-        Assertions.assertEquals(test.integerReturnMethod(1), 123);
+        Mocker.when(someClass.integerReturnMethod(1)).thenReturn(123);
+        Assertions.assertEquals(someClass.integerReturnMethod(1), 123);
     }
 
     @Test
+    @Order(5)
     public void dThrow() throws InstanceNotFoundException {
-        Mocker.when(test.integerReturnMethod(1984)).thenThrow(new IllegalArgumentException());
+        Mocker.when(someClass.integerReturnMethod(1984)).thenThrow(new IllegalArgumentException());
 
         Assertions.assertThrows(RuntimeException.class, () -> {
-            test.integerReturnMethod(1984);
+            someClass.integerReturnMethod(1984);
         });
     }
 
     @Test
+    @Order(6)
     public void dInterfaceReturn() throws InstanceNotFoundException {
-        Mocker.when(itest.someGenerator()).thenReturn(test);
-        Mocker.when(test.stringReturnMethod("uh")).thenReturn("im out of generator");
+        SomeClass someClass1 = new SomeClass(100);
+        someClass1 = Mocker.mock(someClass1);
 
-        Assertions.assertEquals("im out of generator", itest.someGenerator().stringReturnMethod("uh"));
+        Mocker.when(someInterface.someGenerator()).thenReturn(someClass1);
+        Mocker.when(someClass1.integerReturnMethod(5)).thenImplemented();
+
+        Assertions.assertEquals(105, someInterface.someGenerator().integerReturnMethod(5));
     }
 
     @Test
+    @Order(7)
     public void dInterfaceImplemented() throws InstanceNotFoundException {
-        Mocker.when(itest.someGenerator()).thenImplemented();
-        Assertions.assertThrows(Exception.class, ()->{itest.someGenerator();});
+        Mocker.when(someInterface.someGenerator()).thenImplemented();
+        Assertions.assertThrows(Exception.class, ()->{
+            someInterface.someGenerator();});
     }
 
     @Test
+    @Order(8)
     public void dMultipleOverridingOperations() throws InstanceNotFoundException {
-        Mocker.when(test.stringReturnMethod("123")).thenReturn("234");
-        Assertions.assertEquals(test.stringReturnMethod("123"), "234");
+        Mocker.when(someClass.stringReturnMethod("123")).thenReturn("234");
+        Assertions.assertEquals(someClass.stringReturnMethod("123"), "234");
 
-        Mocker.when(test.stringReturnMethod("123")).thenNull();
-        Assertions.assertNull(test.stringReturnMethod("123"));
+        Mocker.when(someClass.stringReturnMethod("123")).thenNull();
+        Assertions.assertNull(someClass.stringReturnMethod("123"));
 
-        Mocker.when(test.stringReturnMethod("123")).thenImplemented();
+        Mocker.when(someClass.stringReturnMethod("123")).thenImplemented();
         Assertions.assertEquals(
                 "Hello from someclass, passed:"+"123",
-                test.stringReturnMethod("123")
+                someClass.stringReturnMethod("123")
         );
 
-        Mocker.when(test.stringReturnMethod("123")).thenThrow(new IllegalArgumentException("Some Exception"));
+        Mocker.when(someClass.stringReturnMethod("123")).thenThrow(new IllegalArgumentException("Some Exception"));
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            test.stringReturnMethod("123");
+            someClass.stringReturnMethod("123");
         });
 
     }
 
     @Test
-    public void sField() throws IllegalAccessException, InstanceNotFoundException {
-        MockTest.testClass = new TestClass();
-
-        Mocker
-                .when(
-                        TestClass.someClassStatic.stringReturnMethod("test")
-                )
-                .thenReturn("static call");
-
-        Assertions.assertEquals(
-                TestClass.someClassStatic.stringReturnMethod("test"),
-                "static call"
-        );
+    @Order(9)
+    public void sEmpty(){
+        Assertions.assertNull(SomeClass.staticStringReturnMethod("123", 123));
     }
 
     @Test
-    public void sClass() throws Throwable {
-        Mocker.when(test.stringReturnMethod("123")).thenReturn("mocked");
-        Assertions.assertEquals("mocked", test.stringReturnMethod("123"));
+    @Order(10)
+    public void sNull() throws InstanceNotFoundException {
+        Mocker.when(SomeClass.staticStringReturnMethod("123", 123)).thenNull();
+        Assertions.assertNull(SomeClass.staticStringReturnMethod("123", 123));
+    }
 
-        Mocker.when(SomeClass.staticStringReturnMethod("str",3)).thenReturn("not_huy");
+    @Test
+    @Order(11)
+    public void sReturn() throws InstanceNotFoundException {
+        Mocker.when(SomeClass.staticStringReturnMethod("str",3)).thenReturn("mocked");
         Assertions.assertEquals(
-                "not_huy",
+                "mocked",
                 SomeClass.staticStringReturnMethod("str",3)
         );
     }
 
     @Test
+    @Order(12)
     public void sThrow() throws InstanceNotFoundException {
-        Mocker.when(SomeClass.staticStringReturnMethod("exception", 3)).thenThrow(new Exception());
+        Mocker.when(SomeClass.staticStringReturnMethod("exception", 42)).thenThrow(new ExceptionInInitializerError());
 
-        Assertions.assertThrows(Exception.class, () -> {
-            SomeClass.staticStringReturnMethod("exception", 3);
+        Assertions.assertThrows(ExceptionInInitializerError.class, () -> {
+            SomeClass.staticStringReturnMethod("exception", 42);
         });
+    }
+
+    @Test
+    @Order(13)
+    public void sImplemented() throws InstanceNotFoundException{
+        Mocker.when(SomeClass.staticStringReturnMethod("someStr", 1)).thenImplemented();
+        Assertions.assertEquals(
+                "Got String: someStr, and Integer: 101",
+                SomeClass.staticStringReturnMethod("someStr", 1)
+        );
+    }
+
+    @Test
+    @Order(14)
+    public void sMultipleOverridingOperations() throws InstanceNotFoundException {
+        Mocker.when(SomeClass.staticStringReturnMethod("someStr", 1)).thenReturn("234");
+        Assertions.assertEquals(SomeClass.staticStringReturnMethod("someStr", 1), "234");
+
+        Mocker.when(SomeClass.staticStringReturnMethod("someStr", 1)).thenNull();
+        Assertions.assertNull(SomeClass.staticStringReturnMethod("someStr", 1));
+
+        Mocker.when(SomeClass.staticStringReturnMethod("someStr", 1)).thenImplemented();
+        Assertions.assertEquals(
+                "Got String: someStr, and Integer: 101",
+                SomeClass.staticStringReturnMethod("someStr", 1)
+        );
+
+        Mocker.when(SomeClass.staticStringReturnMethod("someStr", 1)).thenThrow(new IllegalArgumentException("Some Exception"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> SomeClass.staticStringReturnMethod("someStr", 1));
+
     }
 }

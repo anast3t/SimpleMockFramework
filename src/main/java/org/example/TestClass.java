@@ -16,4 +16,8 @@ public class TestClass{
         Mocker.init(this);
     }
 
+//    public String test () throws Throwable {
+//
+//    }
+
 }

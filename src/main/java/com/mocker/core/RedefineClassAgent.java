@@ -1,4 +1,4 @@
-package org.example;/*
+package com.mocker.core;/*
 Copyright (c) 2017 Turn Inc
 All rights reserved.
 

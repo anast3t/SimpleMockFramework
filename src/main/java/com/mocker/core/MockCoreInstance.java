@@ -52,7 +52,7 @@ public class MockCoreInstance<T> {
     }
 
     protected void addImplementedAction(Pair<Method, ArrayList<Object>> methodPair){
-        this.actionMap.put(methodPair, new Pair<>(null, ActionType.IMPL));
+        this.actionMap.put(methodPair, new Pair<>(null, ActionType.IMPLEMENTED));
     }
 
     private Callback invocationHandler(Object originalInstance){
@@ -89,10 +89,10 @@ public class MockCoreInstance<T> {
             switch (action){
                 case NULL:
                     return null;
-                case IMPL:
+                case IMPLEMENTED:
                     if(originalInstance != null){
                         return method.invoke(originalInstance, objects);
-                    } else throw new IllegalAccessException("Tried to call implemented method of an interface");
+                    } else throw new IllegalAccessException("Tried to call implemented method of an interface. Action map or instance can be corrupted (check if you called unmocked instance in when())");
 //                        throw new InstanceNotFoundException("Can't find instance for running implemented method");
                 case RETURN:
                     return returnValue;
