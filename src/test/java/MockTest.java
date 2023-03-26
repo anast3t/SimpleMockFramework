@@ -11,10 +11,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 
 public class MockTest {
     @Mock
-    public SomeClass test = new SomeClass();
-
-    @Mock
-    public SomeClass testUnimplemented;
+    public SomeClass test;
 
     @Mock
     public SomeInterface itest;
@@ -23,7 +20,7 @@ public class MockTest {
 
 
     @BeforeEach
-    public void setUp() throws IllegalAccessException {
+    public void setUp() throws IllegalAccessException, InstanceNotFoundException {
         Mocker.init(this);
     }
 
@@ -37,12 +34,6 @@ public class MockTest {
         Mocker.when(test.testPrint()).thenReturn(1);
         Mocker.when(test.testPrint()).thenNull();
         Assertions.assertNull(test.testPrint());
-    }
-
-    @Test
-    public void d_NOT_Implemented() throws InstanceNotFoundException {
-        Mocker.when(testUnimplemented.stringReturnMethod("123")).thenImplemented();
-        Assertions.assertThrows(Exception.class, () -> {testUnimplemented.stringReturnMethod("123");});
     }
 
     @Test
@@ -75,6 +66,12 @@ public class MockTest {
         Mocker.when(test.stringReturnMethod("uh")).thenReturn("im out of generator");
 
         Assertions.assertEquals("im out of generator", itest.someGenerator().stringReturnMethod("uh"));
+    }
+
+    @Test
+    public void dInterfaceImplemented() throws InstanceNotFoundException {
+        Mocker.when(itest.someGenerator()).thenImplemented();
+        Assertions.assertThrows(Exception.class, ()->{itest.someGenerator();});
     }
 
     @Test

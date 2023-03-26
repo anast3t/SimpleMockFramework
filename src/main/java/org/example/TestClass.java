@@ -3,6 +3,8 @@ package org.example;
 import com.mocker.Mocker;
 import com.mocker.annotations.Mock;
 
+import javax.management.InstanceNotFoundException;
+
 public class TestClass{
     @Mock
     public SomeClass someClass;
@@ -10,7 +12,7 @@ public class TestClass{
     @Mock
     public static SomeClass someClassStatic;
 
-    public TestClass() throws IllegalAccessException {
+    public TestClass() throws IllegalAccessException, InstanceNotFoundException {
         Mocker.init(this);
     }
 

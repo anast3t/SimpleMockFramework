@@ -3,8 +3,18 @@ package org.example;
 import com.mocker.Mocker;
 
 public class SomeClass {
+    private Integer someInt;
+
     public void someMethod() {
         System.out.println("Plain method called");
+    }
+
+    public SomeClass(Integer someInt){
+        this.someInt = someInt;
+    }
+
+    public SomeClass(){
+
     }
 
     public String stringReturnMethod(String additiveString){
@@ -20,6 +30,10 @@ public class SomeClass {
     }
 
     public Integer testPrint(){
+        return 1;
+    }
+
+    public Integer multiInput(Integer integer, String string, Boolean bool){
         return 1;
     }
 }

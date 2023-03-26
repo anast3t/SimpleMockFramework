@@ -92,7 +92,8 @@ public class MockCoreInstance<T> {
                 case IMPL:
                     if(originalInstance != null){
                         return method.invoke(originalInstance, objects);
-                    } else throw new InstanceNotFoundException("Can't find instance for running implemented method");
+                    } else throw new IllegalAccessException("Tried to call implemented method of an interface");
+//                        throw new InstanceNotFoundException("Can't find instance for running implemented method");
                 case RETURN:
                     return returnValue;
                 case THROW:
