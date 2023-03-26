@@ -1,6 +1,7 @@
 package com.mocker.core;
 
 import com.mocker.Mocker;
+import com.mocker.utils.Functions;
 import com.mocker.utils.Pair;
 import com.mocker.utils.Triple;
 import javassist.*;
@@ -9,15 +10,14 @@ import org.example.RedefineClassAgent;
 import java.io.IOException;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.UnmodifiableClassException;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MockStaticCore {
 
     private static final Map<
-            Triple<Class<?>, String, Object[]>,
+            Triple<Class<?>, String, ArrayList<Object>>,
             Pair<Object, Boolean>
-            > classMap = new IdentityHashMap<>();
+            > classMap = new HashMap<>();
 
     public static void defineStatic(Class<?> mocking) {
 
@@ -93,7 +93,9 @@ public class MockStaticCore {
     public static Object upraiseStaticMethod(Class<?> clazz, String methodname, Class<?> returnType, Object[] params) {
 //        System.out.println("Got uprise in: " + clazz.getName() + "." + methodname);
 
-        Triple<Class<?>, String, Object[]> key = new Triple<>(clazz, methodname, params);
+        ArrayList<Object> paramsList = Functions.recArr2ArrListConverter(params);
+
+        Triple<Class<?>, String, ArrayList<Object>> key = new Triple<>(clazz, methodname, paramsList);
         Mocker.updateLastStatic(key);
 
         Pair<Object, Boolean> returnValue = classMap
@@ -107,11 +109,11 @@ public class MockStaticCore {
         return returnValue;
     }
 
-    public static void addReturn(Triple<Class<?>, String, Object[]> classMethodArgs, Object returnValue) {
+    public static void addReturn(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs, Object returnValue) {
         classMap.put(classMethodArgs, new Pair<>(returnValue, false));
     }
 
-    public static void addException(Triple<Class<?>, String, Object[]> classMethodArgs, Throwable returnValue) {
+    public static void addException(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs, Throwable returnValue) {
         classMap.put(classMethodArgs, new Pair<>(returnValue, true));
     }
 

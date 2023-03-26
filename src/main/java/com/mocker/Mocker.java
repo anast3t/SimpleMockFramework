@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class Mocker {
     private static Object lastCalled;
-    public static Triple<Class<?>, String, Object[]> lastCalledStatic;
+    public static Triple<Class<?>, String, ArrayList<Object>> lastCalledStatic;
 
     private enum LastCalledOrder {
         DYNAMIC, STATIC, IDLE
@@ -94,7 +94,7 @@ public class Mocker {
         lastCalledOrder = LastCalledOrder.DYNAMIC;
     } //TODO: protected
 
-    public static void updateLastStatic(Triple<Class<?>, String, Object[]> classMethodArgs) {
+    public static void updateLastStatic(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs) {
         lastCalledStatic = classMethodArgs;
         lastCalledOrder = LastCalledOrder.STATIC;
     }

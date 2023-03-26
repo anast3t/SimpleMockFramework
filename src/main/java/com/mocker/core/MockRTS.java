@@ -3,12 +3,14 @@ package com.mocker.core;
 import com.mocker.utils.Pair;
 import com.mocker.utils.Triple;
 
+import java.util.ArrayList;
+
 public class MockRTS<R> implements IMockRT<R> {
-    public MockRTS(Triple<Class<?>, String, Object[]> lastCalledStatic){
+    public MockRTS(Triple<Class<?>, String, ArrayList<Object>> lastCalledStatic){
         this.called = lastCalledStatic;
     }
 
-    private final Triple<Class<?>, String, Object[]> called;
+    private final Triple<Class<?>, String, ArrayList<Object>> called;
 
     @Override
     public void thenReturn(R value){

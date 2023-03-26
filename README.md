@@ -1,7 +1,11 @@
 # Mocker
+![java-v](https://img.shields.io/badge/java-11-orange?style=flat-square&logo=oracle)
+![maintained](https://img.shields.io/maintenance/yes/2023?style=flat-square)
+![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/anast3t/SimpleMockFramework?style=flat-square)
+![sponsors](https://img.shields.io/github/sponsors/anast3t?color=red&style=flat-square)
 
 ---
-### Правила:
+## Правила:
 * У мокируемого объекта **_обязательно_** должен существовать пустой конструктор.
 * От мокируемого интерфейса нельзя вызвать `thenImplemented()` если нет инстациированного объекта
 * Все динамические и статические методы мокнутого объекта по умолчанию возвращают `null`
