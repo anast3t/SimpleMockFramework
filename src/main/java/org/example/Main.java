@@ -19,5 +19,3 @@ public class Main {
         System.out.println(name);
     }
 }
-
-// TODO: Суммонить инстанс если его нет

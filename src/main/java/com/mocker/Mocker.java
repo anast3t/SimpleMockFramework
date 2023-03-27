@@ -4,6 +4,7 @@ import com.mocker.annotations.Mock;
 import com.mocker.core.*;
 import com.mocker.utils.Pair;
 import com.mocker.utils.Triple;
+import com.mocker.utils.WrapperDataTypes;
 
 import javax.management.InstanceNotFoundException;
 import java.lang.reflect.Constructor;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 public class Mocker {
     private static Object lastCalled;
+
     public static Triple<Class<?>, String, ArrayList<Object>> lastCalledStatic;
 
     private enum LastCalledOrder {
@@ -103,24 +105,57 @@ public class Mocker {
         Object instance = null;
         if (!type.isInterface()) {
             try {
-                Constructor emptyConstructor = null;
-                for (Constructor constructor : type.getConstructors()) {
-                    Object[] inputTypes = constructor.getParameterTypes();
-                    if (inputTypes.length != 0)
-                        continue;
-                    else {
-                        emptyConstructor = constructor;
-                        break;
-                    }
-                }
-
-                if (emptyConstructor == null)
-                    throw new Exception();
+//                Constructor emptyConstructor = null;
+//                for (Constructor constructor : type.getConstructors()) {
+//                    Object[] inputTypes = constructor.getParameterTypes();
+//                    if (inputTypes.length != 0)
+//                        continue;
+//                    else {
+//                        emptyConstructor = constructor;
+//                        break;
+//                    }
+//                }
+//
+//                if (emptyConstructor == null)
+//                    throw new Exception();
+                Constructor emptyConstructor = type.getConstructor();
                 instance = emptyConstructor.newInstance();
             } catch (Exception exception) {
                 throw new ExceptionInInitializerError("No 0 parameter constructor in class: " + type.getName());
             }
         }
         return instance;
+    }
+
+    public static Boolean anyFlag = false;
+
+    @SuppressWarnings("unchecked")
+    public static <T> T any(Class<T> anyClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        anyFlag = true;
+        WrapperDataTypes wrapper;
+        try{
+            wrapper = WrapperDataTypes.valueOf(anyClass.getSimpleName());
+            switch (wrapper){
+                case Integer:
+                    return (T) Integer.valueOf("42");
+                case Byte:
+                    return (T) Byte.valueOf("42");
+                case Short:
+                    return (T) Short.valueOf("42");
+                case Long:
+                    return (T) Long.valueOf("42");
+                case Float:
+                    return (T) Float.valueOf("42");
+                case Double:
+                    return (T) Double.valueOf("42");
+                case Boolean:
+                    return (T) Boolean.TRUE;
+                case Character:
+                    return (T) Character.valueOf('Z');
+            }
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return anyClass.getConstructor().newInstance();
     }
 }

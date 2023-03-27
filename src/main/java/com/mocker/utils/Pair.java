@@ -14,7 +14,7 @@ public class Pair<Left, Right> {
         this.right = right;
     }
 
-    public Pair(){ //TODO: protected
+    public Pair(){
         this.left = null;
         this.right = null;
     }

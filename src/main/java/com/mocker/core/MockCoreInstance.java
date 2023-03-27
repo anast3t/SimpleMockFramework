@@ -1,6 +1,7 @@
 package com.mocker.core;
 
 import com.mocker.Mocker;
+import com.mocker.annotations.Mock;
 import com.mocker.utils.ActionType;
 import com.mocker.utils.Functions;
 import net.sf.cglib.proxy.Callback;
@@ -45,26 +46,57 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
                 throw new Exception("Class not correct");
             }
 
-
             ArrayList<Object> listedObjects = Functions.recArr2ArrListConverter(objects);
-
+            if(listedObjects.size() == 1 && Mocker.anyFlag){
+                Mocker.anyFlag = false;
+                Object element = listedObjects.remove(0);
+                listedObjects.add(element.getClass()); //TODO: check this class in generalized search
+            }
 
             this.lastCalledMethod = new Pair<>(method, listedObjects);
             Mocker.updateLast(proxy);
 
-            var key = new Pair<>(method, listedObjects);
+            Pair<Method, ArrayList<Object>> keySpecific = new Pair<>(method, listedObjects);
 
-            Pair<Object, ActionType> returnPair = actionMap
+            Pair<Object, ActionType> specificReturnPair = actionMap
                     .entrySet()
                     .stream()
-                    .filter(el -> el.getKey().equals(key))
+                    .filter(el -> el.getKey().equals(keySpecific))
                     .map(Map.Entry::getValue)
                     .findAny()
                     .orElse(null);
-            // TODO: загадка почему через get не тянет (ответ - нет глубокого сравнения и сравнения по массивам видимо)
 
-            if(returnPair == null)
-                return null;
+            Pair<Object, ActionType> generalizedReturnPair = null;
+            if(specificReturnPair == null){
+                if(listedObjects.size() == 1){
+                    ArrayList<Object> any = new ArrayList<>(1);
+                    any.add(listedObjects.get(0).getClass());
+                    Pair<Method, ArrayList<Object>> keyGeneralized = new Pair<>(method, any);
+
+                    generalizedReturnPair = actionMap
+                            .entrySet()
+                            .stream()
+                            .filter(el ->
+                                    el.getKey().left.equals(keyGeneralized.left) &&
+                                    el.getKey().right.get(0).equals(keyGeneralized.right.get(0))
+                            )
+                            .map(Map.Entry::getValue)
+                            .findAny()
+                            .orElse(null);
+                } else{
+                    return null;
+                }
+            }
+
+            Pair<Object, ActionType> returnPair;
+            if(specificReturnPair == null){
+                if(generalizedReturnPair == null){
+                    return null;
+                }
+                returnPair = generalizedReturnPair;
+            } else {
+                returnPair = specificReturnPair;
+            }
 
             Object returnValue = returnPair.left;
             ActionType action = returnPair.right;
@@ -76,7 +108,6 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
                     if(originalInstance != null){
                         return method.invoke(originalInstance, objects);
                     } else throw new IllegalAccessException("Tried to call implemented method of an interface. Action map or instance can be corrupted (check if you called unmocked instance in when())");
-//                        throw new InstanceNotFoundException("Can't find instance for running implemented method");
                 case RETURN:
                     return returnValue;
                 case THROW:

@@ -4,8 +4,9 @@ import org.example.*;
 import org.junit.jupiter.api.*;
 
 import javax.management.InstanceNotFoundException;
+import java.lang.reflect.InvocationTargetException;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class MockTest {
     @Mock
     public SomeClass someClass;
@@ -13,6 +14,7 @@ public class MockTest {
     @Mock
     public SomeInterface someInterface;
 
+    private Integer order = 0;
 
     @BeforeEach
     public void setUp() throws IllegalAccessException, InstanceNotFoundException {
@@ -20,13 +22,11 @@ public class MockTest {
     }
 
     @Test
-    @Order(1)
     public void dEmpty() {
         Assertions.assertNull(someClass.stringReturnMethod("123"));
     }
 
     @Test
-    @Order(2)
     public void dNull() throws InstanceNotFoundException {
         Mocker.when(someClass.testPrint()).thenReturn(1);
         Mocker.when(someClass.testPrint()).thenNull();
@@ -34,7 +34,6 @@ public class MockTest {
     }
 
     @Test
-    @Order(3)
     public void dImplemented() throws InstanceNotFoundException {
         Mocker.when(someClass.stringReturnMethod("123")).thenImplemented();
         Assertions.assertEquals(
@@ -44,14 +43,20 @@ public class MockTest {
     }
 
     @Test
-    @Order(4)
     public void dReturn() throws InstanceNotFoundException {
         Mocker.when(someClass.integerReturnMethod(1)).thenReturn(123);
         Assertions.assertEquals(someClass.integerReturnMethod(1), 123);
     }
 
     @Test
-    @Order(5)
+    public void dReturnWithAny() throws InstanceNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        Mocker.when(someClass.integerReturnMethod(Mocker.any(Integer.class))).thenReturn(123);
+        Assertions.assertEquals(someClass.integerReturnMethod(1), 123);
+        Assertions.assertEquals(someClass.integerReturnMethod(2), 123);
+        Assertions.assertEquals(someClass.integerReturnMethod(3), 123);
+    }
+
+    @Test
     public void dThrow() throws InstanceNotFoundException {
         Mocker.when(someClass.integerReturnMethod(1984)).thenThrow(new IllegalArgumentException());
 
@@ -61,7 +66,6 @@ public class MockTest {
     }
 
     @Test
-    @Order(6)
     public void dInterfaceReturn() throws InstanceNotFoundException {
         SomeClass someClass1 = new SomeClass(100);
         someClass1 = Mocker.mock(someClass1);
@@ -73,7 +77,6 @@ public class MockTest {
     }
 
     @Test
-    @Order(7)
     public void dInterfaceImplemented() throws InstanceNotFoundException {
         Mocker.when(someInterface.someGenerator()).thenImplemented();
         Assertions.assertThrows(Exception.class, ()->{
@@ -81,8 +84,7 @@ public class MockTest {
     }
 
     @Test
-    @Order(8)
-    public void dMultipleOverridingOperations() throws InstanceNotFoundException {
+    public void dWithMultipleOverridingOperations() throws InstanceNotFoundException {
         Mocker.when(someClass.stringReturnMethod("123")).thenReturn("234");
         Assertions.assertEquals(someClass.stringReturnMethod("123"), "234");
 
@@ -103,20 +105,17 @@ public class MockTest {
     }
 
     @Test
-    @Order(9)
     public void sEmpty(){
         Assertions.assertNull(SomeClass.staticStringReturnMethod("123", 123));
     }
 
     @Test
-    @Order(10)
     public void sNull() throws InstanceNotFoundException {
         Mocker.when(SomeClass.staticStringReturnMethod("123", 123)).thenNull();
         Assertions.assertNull(SomeClass.staticStringReturnMethod("123", 123));
     }
 
     @Test
-    @Order(11)
     public void sReturn() throws InstanceNotFoundException {
         Mocker.when(SomeClass.staticStringReturnMethod("str",3)).thenReturn("mocked");
         Assertions.assertEquals(
@@ -126,7 +125,6 @@ public class MockTest {
     }
 
     @Test
-    @Order(12)
     public void sThrow() throws InstanceNotFoundException {
         Mocker.when(SomeClass.staticStringReturnMethod("exception", 42)).thenThrow(new ExceptionInInitializerError());
 
@@ -136,7 +134,6 @@ public class MockTest {
     }
 
     @Test
-    @Order(13)
     public void sImplemented() throws InstanceNotFoundException{
         Mocker.when(SomeClass.staticStringReturnMethod("someStr", 1)).thenImplemented();
         Assertions.assertEquals(
@@ -146,8 +143,7 @@ public class MockTest {
     }
 
     @Test
-    @Order(14)
-    public void sMultipleOverridingOperations() throws InstanceNotFoundException {
+    public void sWithMultipleOverridingOperations() throws InstanceNotFoundException {
         Mocker.when(SomeClass.staticStringReturnMethod("someStr", 1)).thenReturn("234");
         Assertions.assertEquals(SomeClass.staticStringReturnMethod("someStr", 1), "234");
 
