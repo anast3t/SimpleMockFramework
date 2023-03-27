@@ -11,15 +11,23 @@ import org.apache.commons.text.StringSubstitutor;
 import java.lang.instrument.ClassDefinition;
 import java.util.*;
 
-public class MockStaticCore {
+public class MockStaticCore implements IMockCore<Triple<Class<?>, String, ArrayList<Object>>> {
 
-    private static final Map<
+    private static final MockStaticCore instance = new MockStaticCore();
+
+    private MockStaticCore(){
+    }
+
+    public static MockStaticCore getInstance() {
+        return instance;
+    }
+
+    private final Map<
             Triple<Class<?>, String, ArrayList<Object>>,
             Pair<Object, ActionType>
             > classMap = new HashMap<>();
 
-    public static void defineStatic(Class<?> mocking) {
-
+    public void defineStatic(Class<?> mocking) {
         try {
             // find a reference to the class and method you wish to inject
             ClassPool classPool = ClassPool.getDefault();
@@ -61,7 +69,7 @@ public class MockStaticCore {
                 );
 
                 String callCaseFString = "" +
-                        "${Object} returnValue = ${MSC}#upraiseStaticMethod(${Mocking}.class, \"${MethodName}\", ${MethodRT}.class, $args);" +
+                        "${Object} returnValue = ${MSC}#getInstance().upraiseStaticMethod(${Mocking}.class, \"${MethodName}\", $args);" +
                         "if(((${Pair}) returnValue) == null){" +
                             "return (${MethodRT}) null;" +
                         "}" +
@@ -96,7 +104,8 @@ public class MockStaticCore {
         }
     }
 
-    public static Object upraiseStaticMethod(Class<?> clazz, String methodname, Class<?> returnType, Object[] params) { //TODO: remove return type
+    public Object upraiseStaticMethod(Class<?> clazz, String methodname, Object[] params) {
+
 //        System.out.println("Got uprise in: " + clazz.getName() + "." + methodname);
 
         ArrayList<Object> paramsList = Functions.recArr2ArrListConverter(params);
@@ -115,19 +124,23 @@ public class MockStaticCore {
         return returnValue;
     }
 
-    public static void addReturnAction(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs, Object returnValue) {
+    @Override
+    public void addReturnAction(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs, Object returnValue) {
         classMap.put(classMethodArgs, new Pair<>(returnValue, ActionType.RETURN));
     }
 
-    public static void addExceptionAction(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs, Throwable returnValue) {
+    @Override
+    public void addExceptionAction(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs, Throwable returnValue) {
         classMap.put(classMethodArgs, new Pair<>(returnValue, ActionType.THROW));
     }
 
-    public static void addNullAction(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs){
+    @Override
+    public void addNullAction(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs){
         classMap.put(classMethodArgs, new Pair<>(null, ActionType.NULL));
     }
 
-    public static void addImplementedAction(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs){
+    @Override
+    public void addImplementedAction(Triple<Class<?>, String, ArrayList<Object>> classMethodArgs){
         classMap.put(classMethodArgs, new Pair<>(null, ActionType.IMPLEMENTED));
     }
 

@@ -8,11 +8,10 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.InvocationHandler;
 import com.mocker.utils.Pair;
 
-import javax.management.InstanceNotFoundException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class MockCoreInstance<T> {
+public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Object>>> {
     private final Enhancer enhancer;
     private final Class<T> operatingClass;
     private final HashMap<
@@ -22,7 +21,7 @@ public class MockCoreInstance<T> {
 
     protected Pair<Method, ArrayList<Object>> lastCalledMethod = new Pair<>();
 
-    public MockCoreInstance(Class<T> mocking, Object originalInstance) { //TODO: protected
+    public MockCoreInstance(Class<T> mocking, Object originalInstance) {
         enhancer = new Enhancer();
         operatingClass = mocking;
         enhancer.setSuperclass(operatingClass);
@@ -37,22 +36,6 @@ public class MockCoreInstance<T> {
 
     public <R> MockRT<R> when(R smt) {
         return new MockRT<>(this);
-    }
-
-    protected void addReturnAction(Pair<Method, ArrayList<Object>> methodPair, Object ret){
-        this.actionMap.put(methodPair, new Pair<>(ret, ActionType.RETURN));
-    }
-
-    protected void addExceptionAction(Pair<Method, ArrayList<Object>> methodPair, Throwable ret){
-        this.actionMap.put(methodPair, new Pair<>(ret, ActionType.THROW));
-    }
-
-    protected void addNullAction(Pair<Method, ArrayList<Object>> methodPair){
-        this.actionMap.put(methodPair, new Pair<>(null, ActionType.NULL));
-    }
-
-    protected void addImplementedAction(Pair<Method, ArrayList<Object>> methodPair){
-        this.actionMap.put(methodPair, new Pair<>(null, ActionType.IMPLEMENTED));
     }
 
     private Callback invocationHandler(Object originalInstance){
@@ -101,5 +84,25 @@ public class MockCoreInstance<T> {
             }
             return null;
         };
+    }
+
+    @Override
+    public void addReturnAction(Pair<Method, ArrayList<Object>> methodPair, Object ret){
+        this.actionMap.put(methodPair, new Pair<>(ret, ActionType.RETURN));
+    }
+
+    @Override
+    public void addExceptionAction(Pair<Method, ArrayList<Object>> methodPair, Throwable ret){
+        this.actionMap.put(methodPair, new Pair<>(ret, ActionType.THROW));
+    }
+
+    @Override
+    public void addNullAction(Pair<Method, ArrayList<Object>> methodPair){
+        this.actionMap.put(methodPair, new Pair<>(null, ActionType.NULL));
+    }
+
+    @Override
+    public void addImplementedAction(Pair<Method, ArrayList<Object>> methodPair){
+        this.actionMap.put(methodPair, new Pair<>(null, ActionType.IMPLEMENTED));
     }
 }

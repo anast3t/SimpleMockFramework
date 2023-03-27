@@ -59,7 +59,7 @@ public class Mocker {
         T proxyInstance = core.getMock();
         instanceMap.put(proxyInstance, core);
 
-        MockStaticCore.defineStatic(mocking);
+        MockStaticCore.getInstance().defineStatic(mocking);
 
         return proxyInstance;
     }

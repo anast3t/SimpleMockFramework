@@ -10,24 +10,25 @@ public class MockRTS<R> implements IMockRT<R> {
     }
 
     private final Triple<Class<?>, String, ArrayList<Object>> called;
+    private final MockStaticCore mockStaticCore = MockStaticCore.getInstance();
 
     @Override
     public void thenReturn(R value){
-        MockStaticCore.addReturnAction(called, value);
+        mockStaticCore.addReturnAction(called, value);
     }
 
     @Override
     public void thenThrow (Throwable exception) {
-        MockStaticCore.addExceptionAction(called, exception);
+        mockStaticCore.addExceptionAction(called, exception);
     }
 
     @Override
     public void thenNull() {
-        MockStaticCore.addNullAction(called);
+        mockStaticCore.addNullAction(called);
     }
 
     @Override
     public void thenImplemented() {
-        MockStaticCore.addImplementedAction(called);
+        mockStaticCore.addImplementedAction(called);
     }
 }
