@@ -105,19 +105,6 @@ public class Mocker {
         Object instance = null;
         if (!type.isInterface()) {
             try {
-//                Constructor emptyConstructor = null;
-//                for (Constructor constructor : type.getConstructors()) {
-//                    Object[] inputTypes = constructor.getParameterTypes();
-//                    if (inputTypes.length != 0)
-//                        continue;
-//                    else {
-//                        emptyConstructor = constructor;
-//                        break;
-//                    }
-//                }
-//
-//                if (emptyConstructor == null)
-//                    throw new Exception();
                 Constructor emptyConstructor = type.getConstructor();
                 instance = emptyConstructor.newInstance();
             } catch (Exception exception) {
@@ -135,6 +122,7 @@ public class Mocker {
         WrapperDataTypes wrapper;
         try{
             wrapper = WrapperDataTypes.valueOf(anyClass.getSimpleName());
+            //god-forgive: Да простит меня бог за содеянное.
             switch (wrapper){
                 case Integer:
                     return (T) Integer.valueOf("42");
@@ -156,6 +144,10 @@ public class Mocker {
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
-        return anyClass.getConstructor().newInstance();
+        try{
+            return anyClass.getConstructor().newInstance();
+        } catch (NoSuchMethodException exception){
+            throw new NoSuchMethodException("Class without an 0 constructor in any()");
+        }
     }
 }

@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Object>>> {
+    //TODO: маски для any
     private final Enhancer enhancer;
     private final Class<T> operatingClass;
     private final HashMap<
@@ -41,19 +42,18 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
 
     private Callback invocationHandler(Object originalInstance){
         return (InvocationHandler) (proxy, method, objects) -> {
-
             if (!method.getDeclaringClass().isAssignableFrom(operatingClass)) {
-                throw new Exception("Class not correct");
+                throw new ClassCastException("Method is not from mocked class");
             }
 
             ArrayList<Object> listedObjects = Functions.recArr2ArrListConverter(objects);
             if(listedObjects.size() == 1 && Mocker.anyFlag){
                 Mocker.anyFlag = false;
                 Object element = listedObjects.remove(0);
-                listedObjects.add(element.getClass()); //TODO: check this class in generalized search
+                listedObjects.add(element.getClass());
             }
-
             this.lastCalledMethod = new Pair<>(method, listedObjects);
+
             Mocker.updateLast(proxy);
 
             Pair<Method, ArrayList<Object>> keySpecific = new Pair<>(method, listedObjects);
