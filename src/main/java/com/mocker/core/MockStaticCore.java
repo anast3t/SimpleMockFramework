@@ -6,6 +6,7 @@ import com.mocker.utils.Functions;
 import com.mocker.utils.Pair;
 import com.mocker.utils.Triple;
 import javassist.*;
+import org.apache.commons.text.StringSubstitutor;
 
 import java.lang.instrument.ClassDefinition;
 import java.util.*;
@@ -40,68 +41,47 @@ public class MockStaticCore {
 
                 ctClass.removeMethod(method);
 
-                String callString = "" +
-                        "%s returnValue = %s#upraiseStaticMethod(%s.class, \"%s\", %s.class, $args);" +
-                        "if(((%s) returnValue) == null){" +
-                        "return (%s) null;" +
-                        "}" +
-                        "if(((%s)((%s) returnValue).right).equals(%s.THROW)){" +
-                        "throw (Throwable) ((%s) returnValue).left;" +
-                        "}" +
-                        "else if(((%s)((%s) returnValue).right).equals(%s.RETURN)){" +
-                        "return (%s) ((%s) returnValue).left;" +
-                        "}" +
-                        "else if(((%s)((%s) returnValue).right).equals(%s.NULL)){" +
-                        "return (%s) null;" +
-                        "}" +
-                        "else if(((%s)((%s) returnValue).right).equals(%s.IMPLEMENTED)){" +
-//                        "System.out.println(\"Running implemented\");"+
-                        "}" +
-                        ""; //TODO: rework on switch case
-
                 String pairCN = Pair.class.getCanonicalName();
                 String objectCN = Object.class.getCanonicalName();
                 String mockStaticCoreCN = MockStaticCore.class.getCanonicalName();
                 String boolCN = Boolean.class.getCanonicalName();
                 String actionCN = ActionType.class.getCanonicalName();
                 String methodRTCN = method.getReturnType().getName();
+                String mockingCN = mocking.getCanonicalName();
+                String methodName = method.getMethodInfo().getName();
 
-                String body = String.format(callString,
-                        objectCN, //call
-                        mockStaticCoreCN,
-                        mocking.getCanonicalName(),
-                        method.getMethodInfo().getName(),
-                        pairCN,
-
-                        pairCN, //if null
-                        methodRTCN,
-
-                        actionCN, //THROW
-                        pairCN,
-                        actionCN,
-                        pairCN,
-
-                        actionCN, //RETURN
-                        pairCN,
-                        actionCN,
-                        methodRTCN,
-                        pairCN,
-
-                        actionCN, //NULL
-                        pairCN,
-                        actionCN,
-                        methodRTCN,
-
-                        actionCN, //IMPLEMENTED
-                        pairCN,
-                        actionCN
+                Map<String, String> namesMap = Map.of(
+                        "Pair", pairCN,
+                        "Object", objectCN,
+                        "MSC", mockStaticCoreCN,
+                        "ActionType", actionCN,
+                        "MethodRT", methodRTCN,
+                        "Mocking", mockingCN,
+                        "MethodName", methodName
                 );
 
-//                System.out.println(body);
+                String callCaseFString = "" +
+                        "${Object} returnValue = ${MSC}#upraiseStaticMethod(${Mocking}.class, \"${MethodName}\", ${MethodRT}.class, $args);" +
+                        "if(((${Pair}) returnValue) == null){" +
+                            "return (${MethodRT}) null;" +
+                        "}" +
+                        "switch(((${ActionType})((${Pair}) returnValue).right).toString()){" +
+                            "case \"THROW\":" +
+                                "throw (Throwable) ((${Pair}) returnValue).left;" +
+                            "case \"RETURN\":"+
+                                "return (${MethodRT}) ((${Pair}) returnValue).left;" +
+                            "case \"NULL\":" +
+                                "return (${MethodRT}) null;" +
+                            "case \"IMPLEMENTED\":" +
+                                "break;" +
+//                                "System.out.println(\"Running implemented\");"+
+                        "}";
 
-//                method.setBody(body);
+                String fBody = new StringSubstitutor(namesMap).replace(callCaseFString);
 
-                method.insertBefore(body);
+//                System.out.println(fBody);
+
+                method.insertBefore(fBody);
 
                 ctClass.addMethod(method);
             }
@@ -116,7 +96,7 @@ public class MockStaticCore {
         }
     }
 
-    public static Object upraiseStaticMethod(Class<?> clazz, String methodname, Class<?> returnType, Object[] params) {
+    public static Object upraiseStaticMethod(Class<?> clazz, String methodname, Class<?> returnType, Object[] params) { //TODO: remove return type
 //        System.out.println("Got uprise in: " + clazz.getName() + "." + methodname);
 
         ArrayList<Object> paramsList = Functions.recArr2ArrListConverter(params);
