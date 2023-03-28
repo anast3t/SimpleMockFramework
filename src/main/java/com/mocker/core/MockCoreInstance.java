@@ -21,8 +21,8 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
             > actionMap = new HashMap<>();
     private final HashMap<
             Pair<Method, Integer>, // метод - количество any (trinket)
-            ArrayList<Pair<Method, ArrayList<Object>>> //лист ключей для actionMap (keymasks)
-            > trinketKeymasks = new HashMap<>();
+            Pair<Method, ArrayList<Object>> //маска ключа
+            > trinketKeymask = new HashMap<>();
     
     protected Integer anyCounter = 0;
 
@@ -89,34 +89,28 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
 
             Pair<Object, ActionType> generalizedReturnPair = null;
             if(specificReturnPair == null){
-                ArrayList<Pair<Method, ArrayList<Object>>> keymasks = null;
-                Boolean foundFlag = false;
+                Pair<Method, ArrayList<Object>> keymask = null;
                 for(int i = 1; i <= listedObjects.size(); i++){
-                    keymasks = trinketKeymasks.get(new Pair<>(method, i)); //TODO: абстрагировать отсюда
-                    if(keymasks != null){
-                        for(Pair<Method, ArrayList<Object>> keymask : keymasks){
-                            Pair<Method, ArrayList<Object>> masked = new Pair<>(keymask.left, new ArrayList<>(keymask.right));
-                            for(int j = 0; j < masked.right.size(); j++){
-                                if(masked.right.get(j) == null){
-                                    masked.right.remove(j);
-                                    masked.right.add(j, listedObjects.get(j));
-                                }
-                            } // До сюда
-                            generalizedReturnPair = actionMap
-                                    .entrySet()
-                                    .stream()
-                                    .filter(el ->el.getKey().equals(masked))
-                                    .map(Map.Entry::getValue)
-                                    .findAny()
-                                    .orElse(null);
-                            if(generalizedReturnPair != null){
-                                foundFlag = true;
-                                break;
+                    keymask = trinketKeymask.get(new Pair<>(method, i)); //TODO: абстрагировать отсюда
+                    if(keymask != null){
+                        Pair<Method, ArrayList<Object>> masked = new Pair<>(keymask.left, new ArrayList<>(keymask.right));
+                        for(int j = 0; j < masked.right.size(); j++){
+                            if(masked.right.get(j) == null){
+                                masked.right.remove(j);
+                                masked.right.add(j, listedObjects.get(j));
                             }
+                        } // До сюда
+                        generalizedReturnPair = actionMap
+                                .entrySet()
+                                .stream()
+                                .filter(el ->el.getKey().equals(masked))
+                                .map(Map.Entry::getValue)
+                                .findAny()
+                                .orElse(null);
+                        if(generalizedReturnPair != null){
+                            break;
                         }
                     }
-                    if(foundFlag)
-                        break;
                 }
             }
 
@@ -177,9 +171,9 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
         if(anyCounter == 0)
             return;
         Pair<Method, Integer> trinket = new Pair<>(methodPair.left, anyCounter);
-        ArrayList<Pair<Method, ArrayList<Object>>> keymasks = trinketKeymasks.get(trinket);
-        if(keymasks == null) {
-            keymasks = new ArrayList<>();
+        Pair<Method, ArrayList<Object>> keymask = trinketKeymask.get(trinket);
+        if(keymask != null) {
+            System.out.println("Keymask for " + anyCounter + " was overridden"); //TODO: rework from arrayList to solo keymask
         }
         ArrayList<Object> params = methodPair.right;
         params = (ArrayList<Object>) params.stream().map(x->{
@@ -188,7 +182,7 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
             }
             return x;
         }).collect(Collectors.toList());
-        keymasks.add(new Pair<>(methodPair.left, params));
-        trinketKeymasks.put(trinket, keymasks);
+        keymask = new Pair<>(methodPair.left, params);
+        trinketKeymask.put(trinket, keymask);
     }
 }

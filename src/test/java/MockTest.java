@@ -112,9 +112,9 @@ public class MockTest {
         when(someClass.multiInput(any(String.class), 10, true)).thenReturn(322); // 1
         when(someClass.multiInput("123", 10, any(Boolean.class))).thenReturn(1984); // 1
 
-        Assertions.assertEquals(someClass.multiInput("123", 10, Boolean.TRUE), 1984);
-        Assertions.assertEquals(someClass.multiInput("124", 10, Boolean.TRUE), 322);
-        Assertions.assertEquals(someClass.multiInput("124", 10, Boolean.FALSE), 13);
+        Assertions.assertEquals(1984, someClass.multiInput("123", 10, Boolean.TRUE));
+        Assertions.assertEquals(14, someClass.multiInput("124", 10, Boolean.TRUE));
+        Assertions.assertEquals(13, someClass.multiInput("124", 10, Boolean.FALSE));
 
     }
 
