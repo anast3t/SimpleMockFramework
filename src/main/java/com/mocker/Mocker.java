@@ -2,7 +2,6 @@ package com.mocker;
 
 import com.mocker.annotations.Mock;
 import com.mocker.core.*;
-import com.mocker.utils.Pair;
 import com.mocker.utils.Triple;
 import com.mocker.utils.WrapperDataTypes;
 
@@ -11,7 +10,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 //-Djdk.attach.allowAttachSelf=true
 
@@ -114,40 +112,54 @@ public class Mocker {
         return instance;
     }
 
-    public static Boolean anyFlag = false;
+    public static ArrayList<Object> listOfAny = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
-    public static <T> T any(Class<T> anyClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        anyFlag = true;
+    public static <T> T any(Class<T> anyClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, ClassNotFoundException {
         WrapperDataTypes wrapper;
+        Object returnObject = null;
         try{
             wrapper = WrapperDataTypes.valueOf(anyClass.getSimpleName());
             //god-forgive: Да простит меня бог за содеянное.
             switch (wrapper){
                 case Integer:
-                    return (T) Integer.valueOf("42");
+                    returnObject = Integer.valueOf("42");
+                    break;
                 case Byte:
-                    return (T) Byte.valueOf("42");
+                    returnObject = Byte.valueOf("42");
+                    break;
                 case Short:
-                    return (T) Short.valueOf("42");
+                    returnObject = Short.valueOf("42");
+                    break;
                 case Long:
-                    return (T) Long.valueOf("42");
+                    returnObject = Long.valueOf("42");
+                    break;
                 case Float:
-                    return (T) Float.valueOf("42");
+                    returnObject = Float.valueOf("42");
+                    break;
                 case Double:
-                    return (T) Double.valueOf("42");
+                    returnObject = Double.valueOf("42");
+                    break;
                 case Boolean:
-                    return (T) Boolean.TRUE;
+                    returnObject = Boolean.TRUE;
+                    break;
                 case Character:
-                    return (T) Character.valueOf('Z');
+                    returnObject = Character.valueOf('Z');
+                    break;
             }
         } catch (Exception e){
             System.out.println(e.getMessage());
+            try{
+                returnObject = anyClass.getConstructor().newInstance();
+            } catch (NoSuchMethodException exception){
+                throw new NoSuchMethodException("Class without an 0 constructor in any()");
+            }
         }
-        try{
-            return anyClass.getConstructor().newInstance();
-        } catch (NoSuchMethodException exception){
-            throw new NoSuchMethodException("Class without an 0 constructor in any()");
-        }
+        if(returnObject == null)
+            throw new ClassNotFoundException("Failed to instantiate object");
+
+        listOfAny.add(returnObject);
+
+        return (T) returnObject;
     }
 }

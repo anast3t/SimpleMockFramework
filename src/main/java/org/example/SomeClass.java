@@ -41,4 +41,8 @@ public class SomeClass {
     public Integer testPrint(){
         return 1;
     }
+
+    public Integer multiInput(String string, Integer integer, Boolean bool){
+        return string.length() + integer + (bool ? 1 : 0);
+    }
 }

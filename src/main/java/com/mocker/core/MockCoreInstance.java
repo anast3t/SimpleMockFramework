@@ -1,7 +1,6 @@
 package com.mocker.core;
 
 import com.mocker.Mocker;
-import com.mocker.annotations.Mock;
 import com.mocker.utils.ActionType;
 import com.mocker.utils.Functions;
 import net.sf.cglib.proxy.Callback;
@@ -11,15 +10,21 @@ import com.mocker.utils.Pair;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Object>>> {
-    //TODO: маски для any
     private final Enhancer enhancer;
     private final Class<T> operatingClass;
     private final HashMap<
             Pair<Method, ArrayList<Object>>, //Вызываемый метод - аргументы метода
             Pair<Object, ActionType> // Возвращаемое значение - является ли значение эксепшном
             > actionMap = new HashMap<>();
+    private final HashMap<
+            Pair<Method, Integer>, // метод - количество any (trinket)
+            ArrayList<Pair<Method, ArrayList<Object>>> //лист ключей для actionMap (keymasks)
+            > trinketKeymasks = new HashMap<>();
+    
+    protected Integer anyCounter = 0;
 
     protected Pair<Method, ArrayList<Object>> lastCalledMethod = new Pair<>();
 
@@ -47,11 +52,27 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
             }
 
             ArrayList<Object> listedObjects = Functions.recArr2ArrListConverter(objects);
-            if(listedObjects.size() == 1 && Mocker.anyFlag){
-                Mocker.anyFlag = false;
-                Object element = listedObjects.remove(0);
-                listedObjects.add(element.getClass());
+            anyCounter = 0;
+            Integer initialSize = Mocker.listOfAny.size();
+            for(int i = 0; i < listedObjects.size(); i++){
+                Object real = listedObjects.get(i);
+                Object anyObject = null;
+                for(Object anyElement : Mocker.listOfAny){
+                    if(anyElement == real){
+                        anyObject = anyElement;
+                    }
+                }
+                if(anyObject != null){
+                    Object element = listedObjects.remove(i);
+                    listedObjects.add(i, element.getClass());
+                    anyCounter+=1;
+                }
             }
+            if(!initialSize.equals(anyCounter)){
+                throw new IllegalCallerException("any() or when() used in wrong way, order or place");
+            }
+            Mocker.listOfAny = new ArrayList<>();
+
             this.lastCalledMethod = new Pair<>(method, listedObjects);
 
             Mocker.updateLast(proxy);
@@ -68,23 +89,34 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
 
             Pair<Object, ActionType> generalizedReturnPair = null;
             if(specificReturnPair == null){
-                if(listedObjects.size() == 1){
-                    ArrayList<Object> any = new ArrayList<>(1);
-                    any.add(listedObjects.get(0).getClass());
-                    Pair<Method, ArrayList<Object>> keyGeneralized = new Pair<>(method, any);
-
-                    generalizedReturnPair = actionMap
-                            .entrySet()
-                            .stream()
-                            .filter(el ->
-                                    el.getKey().left.equals(keyGeneralized.left) &&
-                                    el.getKey().right.get(0).equals(keyGeneralized.right.get(0))
-                            )
-                            .map(Map.Entry::getValue)
-                            .findAny()
-                            .orElse(null);
-                } else{
-                    return null;
+                ArrayList<Pair<Method, ArrayList<Object>>> keymasks = null;
+                Boolean foundFlag = false;
+                for(int i = 1; i <= listedObjects.size(); i++){
+                    keymasks = trinketKeymasks.get(new Pair<>(method, i)); //TODO: абстрагировать отсюда
+                    if(keymasks != null){
+                        for(Pair<Method, ArrayList<Object>> keymask : keymasks){
+                            Pair<Method, ArrayList<Object>> masked = new Pair<>(keymask.left, new ArrayList<>(keymask.right));
+                            for(int j = 0; j < masked.right.size(); j++){
+                                if(masked.right.get(j) == null){
+                                    masked.right.remove(j);
+                                    masked.right.add(j, listedObjects.get(j));
+                                }
+                            } // До сюда
+                            generalizedReturnPair = actionMap
+                                    .entrySet()
+                                    .stream()
+                                    .filter(el ->el.getKey().equals(masked))
+                                    .map(Map.Entry::getValue)
+                                    .findAny()
+                                    .orElse(null);
+                            if(generalizedReturnPair != null){
+                                foundFlag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(foundFlag)
+                        break;
                 }
             }
 
@@ -120,20 +152,43 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
     @Override
     public void addReturnAction(Pair<Method, ArrayList<Object>> methodPair, Object ret){
         this.actionMap.put(methodPair, new Pair<>(ret, ActionType.RETURN));
+        addToKeyChain(methodPair);
     }
 
     @Override
     public void addExceptionAction(Pair<Method, ArrayList<Object>> methodPair, Throwable ret){
         this.actionMap.put(methodPair, new Pair<>(ret, ActionType.THROW));
+        addToKeyChain(methodPair);
     }
 
     @Override
     public void addNullAction(Pair<Method, ArrayList<Object>> methodPair){
         this.actionMap.put(methodPair, new Pair<>(null, ActionType.NULL));
+        addToKeyChain(methodPair);
     }
 
     @Override
     public void addImplementedAction(Pair<Method, ArrayList<Object>> methodPair){
         this.actionMap.put(methodPair, new Pair<>(null, ActionType.IMPLEMENTED));
+        addToKeyChain(methodPair);
+    }
+
+    private void addToKeyChain(Pair<Method, ArrayList<Object>> methodPair){
+        if(anyCounter == 0)
+            return;
+        Pair<Method, Integer> trinket = new Pair<>(methodPair.left, anyCounter);
+        ArrayList<Pair<Method, ArrayList<Object>>> keymasks = trinketKeymasks.get(trinket);
+        if(keymasks == null) {
+            keymasks = new ArrayList<>();
+        }
+        ArrayList<Object> params = methodPair.right;
+        params = (ArrayList<Object>) params.stream().map(x->{
+            if(x.getClass() != Class.class){
+                return null;
+            }
+            return x;
+        }).collect(Collectors.toList());
+        keymasks.add(new Pair<>(methodPair.left, params));
+        trinketKeymasks.put(trinket, keymasks);
     }
 }

@@ -104,7 +104,7 @@ public class MockStaticCore implements IMockCore<Triple<Class<?>, String, ArrayL
         }
     }
 
-    public Object upraiseStaticMethod(Class<?> clazz, String methodname, Object[] params) {
+    public Object upraiseStaticMethod(Class<?> clazz, String methodname, Object[] params) { //TODO: any
 
 //        System.out.println("Got uprise in: " + clazz.getName() + "." + methodname);
 
