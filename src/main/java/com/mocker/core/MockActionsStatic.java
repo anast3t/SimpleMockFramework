@@ -4,8 +4,8 @@ import com.mocker.utils.Triple;
 
 import java.util.ArrayList;
 
-public class MockRTS<R> implements IMockRT<R> {
-    public MockRTS(Triple<Class<?>, String, ArrayList<Object>> lastCalledStatic){
+public class MockActionsStatic<R> implements IMockActions<R> {
+    public MockActionsStatic(Triple<Class<?>, String, ArrayList<Object>> lastCalledStatic){
         this.called = lastCalledStatic;
     }
 

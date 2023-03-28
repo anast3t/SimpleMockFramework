@@ -17,7 +17,7 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
     private final Class<T> operatingClass;
     private final HashMap<
             Pair<Method, ArrayList<Object>>, //Вызываемый метод - аргументы метода
-            Pair<Object, ActionType> // Возвращаемое значение - является ли значение эксепшном
+            Pair<Object, ActionType> // Возвращаемое значение - тип действия
             > actionMap = new HashMap<>();
     private final HashMap<
             Pair<Method, Integer>, // метод - количество any (trinket)
@@ -41,8 +41,8 @@ public class MockCoreInstance<T> implements IMockCore<Pair<Method, ArrayList<Obj
         return instance;
     }
 
-    public <R> MockRT<R> when(R smt) {
-        return new MockRT<>(this);
+    public <R> MockActions<R> when(R smt) {
+        return new MockActions<>(this);
     }
 
     private Callback invocationHandler(Object originalInstance){

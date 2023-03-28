@@ -15,7 +15,7 @@ import java.util.*;
 
 public class Mocker {
     private static Object lastCalled;
-
+    public static ArrayList<Object> listOfAny = new ArrayList<>();
     public static Triple<Class<?>, String, ArrayList<Object>> lastCalledStatic;
 
     private enum LastCalledOrder {
@@ -80,11 +80,11 @@ public class Mocker {
         }
     }
 
-    public static <R> IMockRT<R> when(R smt) throws InstanceNotFoundException {
+    public static <R> IMockActions<R> when(R smt) throws InstanceNotFoundException {
         if (lastCalledOrder.equals(LastCalledOrder.DYNAMIC)) {
             return instanceMap.get(lastCalled).when(smt);
         } else if (lastCalledOrder.equals(LastCalledOrder.STATIC)) {
-            return new MockRTS<R>(lastCalledStatic);
+            return new MockActionsStatic<R>(lastCalledStatic);
         } else throw new InstanceNotFoundException("Last call is not initialized");
 
     }
@@ -112,7 +112,7 @@ public class Mocker {
         return instance;
     }
 
-    public static ArrayList<Object> listOfAny = new ArrayList<>();
+
 
     @SuppressWarnings("unchecked")
     public static <T> T any(Class<T> anyClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, ClassNotFoundException {

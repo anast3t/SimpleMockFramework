@@ -5,8 +5,8 @@ import com.mocker.utils.Pair;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-public class MockRT<R> implements IMockRT<R> { //Return - throw
-    public MockRT(MockCoreInstance<?> parent){
+public class MockActions<R> implements IMockActions<R> { //Return - throw
+    public MockActions(MockCoreInstance<?> parent){
         this.parent = parent;
         this.called = parent.lastCalledMethod;
     }
